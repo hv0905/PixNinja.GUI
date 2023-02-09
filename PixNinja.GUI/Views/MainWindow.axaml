@@ -1,18 +1,19 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:PixNinja.GUI.ViewModels"
+        xmlns:local="clr-namespace:PixNinja.GUI.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="PixNinja.GUI.Views.MainWindow"
+        x:Name="Root"
         Icon="/Assets/avalonia-logo.ico"
         TransparencyLevelHint="AcrylicBlur"
         ExtendClientAreaToDecorationsHint="True"
         Background="Transparent"
         Title="PixNinja.GUI">
   <Window.Styles>
-    <Style Selector="Button">
+    <Style Selector="Button.tool">
       <Setter Property="MinWidth" Value="100"/>
       <Setter Property="HorizontalContentAlignment" Value="Center"/>
       <Setter Property="Margin" Value="4"></Setter>
@@ -21,9 +22,9 @@
       <Setter Property="Margin" Value="4"></Setter>
     </Style>
   </Window.Styles>
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+  <Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
   <Panel>
     <ExperimentalAcrylicBorder IsHitTestVisible="False">
       <ExperimentalAcrylicBorder.Material>
@@ -34,34 +35,8 @@
             MaterialOpacity="0.65" />
       </ExperimentalAcrylicBorder.Material>
     </ExperimentalAcrylicBorder>
-    <Grid Margin="16" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="Auto"/>
-        <RowDefinition Height="*"/>
-        <RowDefinition Height="Auto"/>
-      </Grid.RowDefinitions>
-      <StackPanel>
-        <TextBlock FontSize="25" Text="PixNinja"></TextBlock>
-        <Panel Height="16"></Panel>
-        <TextBlock Text="Directory"/>
-        <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
-          <Button Content="Add" DockPanel.Dock="Right" Command="{Binding AddPath}"/>
-          <Button Content="Browse..." DockPanel.Dock="Right" Command="{Binding Browse}"/>
-          <TextBox HorizontalAlignment="Stretch" Watermark="Input your path..." Text="{Binding InputPath}"/>
-        </DockPanel>
-      </StackPanel>
-      <ListBox Grid.Row="1" Margin="16" Items="{Binding Paths}">
-        <ListBox.ItemTemplate>
-          <DataTemplate>
-            <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
-              <Button DockPanel.Dock="Right" i:Attached.Icon="fa-solid fa-folder-minus" Margin="2" Width="35" MinWidth="35"/>
-              <TextBlock DockPanel.Dock="Left" Text="{Binding}" VerticalAlignment="Center"/>
-            </DockPanel>
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
-      <Button Grid.Row="2" Content="Start Scanning..." HorizontalAlignment="Stretch"/>
-    </Grid>
+    <local:HomePage DataContext="{Binding HomePageViewModel}" Margin="16" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsVisible="{Binding DataContext.DisplayHomePage ,ElementName=Root  }"></local:HomePage>
+    <local:ProgressPage DataContext="{Binding ProgressPageViewModel}" Margin="16" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsVisible="{Binding DataContext.DisplayProgressPage ,ElementName=Root  }"></local:ProgressPage>
   </Panel>
   
 

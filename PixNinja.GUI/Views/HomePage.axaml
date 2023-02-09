@@ -1,0 +1,40 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PixNinja.GUI.ViewModels"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Name="Root"
+             x:Class="PixNinja.GUI.Views.HomePage">
+    <Design.DataContext>
+        <vm:HomePageViewModel/>
+    </Design.DataContext>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <TextBlock FontSize="25" Text="PixNinja"></TextBlock>
+            <Panel Height="16"></Panel>
+            <TextBlock Text="Directory"/>
+            <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
+                <Button Classes="tool" Content="Add" DockPanel.Dock="Right" Command="{Binding AddPath}"/>
+                <Button Classes="tool" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Browse}"/>
+                <TextBox HorizontalAlignment="Stretch" Watermark="Input your path..." Text="{Binding InputPath}"/>
+            </DockPanel>
+        </StackPanel>
+        <ListBox Grid.Row="1" Margin="16" Items="{Binding Paths}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
+                        <Button DockPanel.Dock="Right" i:Attached.Icon="fa-solid fa-folder-minus" Margin="2" Width="35" MinWidth="35"  Command="{Binding DataContext.Remove, ElementName=Root}" CommandParameter="{Binding }"/>
+                        <TextBlock DockPanel.Dock="Left" Text="{Binding}" VerticalAlignment="Center"/>
+                    </DockPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Button Classes="tool" Grid.Row="2" Content="Start Scanning..." HorizontalAlignment="Stretch" Command="{Binding StartScan}"/>
+    </Grid>
+</UserControl>

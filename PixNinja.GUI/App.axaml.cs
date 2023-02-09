@@ -1,4 +1,6 @@
+using System;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
@@ -25,6 +27,18 @@ namespace PixNinja.GUI
             }
 
             base.OnFrameworkInitializationCompleted();
+        }
+
+        public static Window GetCurrentMainWindow()
+        {
+            if (Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                return desktop.MainWindow;
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
