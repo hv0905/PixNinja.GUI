@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="PixNinja.GUI/App.axaml" value="PixNinja.GUI/PixNinja.GUI.csproj" />
+        <entry key="PixNinja.GUI/Views/MainWindow.axaml" value="PixNinja.GUI/PixNinja.GUI.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
