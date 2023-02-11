@@ -3,11 +3,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:PixNinja.GUI.ViewModels"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PixNinja.GUI.Views.ProgressPage">
     <Design.DataContext>
         <vm:ProgressPageViewModel/>
     </Design.DataContext>
-    
+    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        <i:Icon Value="fa-solid fa-rocket" Height="100" Width="100" FontSize="100"></i:Icon>
+        <TextBlock HorizontalAlignment="Center" FontSize="50" FontWeight="Light">Scanning...</TextBlock>
+        <TextBlock HorizontalAlignment="Center">This might take a while...</TextBlock>
+        <ProgressBar Margin="16" Maximum="100" Value="{Binding Progress}"></ProgressBar>
+        <TextBlock Text="{Binding Status}"></TextBlock>
+    </StackPanel>
     
 </UserControl>

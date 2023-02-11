@@ -21,7 +21,7 @@
             <TextBlock Text="Directory"/>
             <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
                 <Button Classes="tool" Content="Add" DockPanel.Dock="Right" Command="{Binding AddPath}"/>
-                <Button Classes="tool" Content="Browse..." DockPanel.Dock="Right" Command="{Binding Browse}"/>
+                <Button Classes="tool" Content="Browse..." DockPanel.Dock="Right" Click="Button_OnClick"/>
                 <TextBox HorizontalAlignment="Stretch" Watermark="Input your path..." Text="{Binding InputPath}"/>
             </DockPanel>
         </StackPanel>

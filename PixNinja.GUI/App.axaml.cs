@@ -3,7 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-
+using PixNinja.GUI.Services;
 using PixNinja.GUI.ViewModels;
 using PixNinja.GUI.Views;
 
@@ -22,7 +22,7 @@ namespace PixNinja.GUI
             {
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = new MainWindowViewModel(new ImageScanningService()),
                 };
             }
 
@@ -37,7 +37,7 @@ namespace PixNinja.GUI
             }
             else
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
         }
     }

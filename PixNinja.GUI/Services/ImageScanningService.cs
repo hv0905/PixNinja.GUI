@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AvaloniaEdit.Utils;
 using CoenM.ImageHash;
 using CoenM.ImageHash.HashAlgorithms;
 using PixNinja.GUI.Models;
@@ -17,7 +20,16 @@ public class ImageScanningService : ReactiveObject
     public List<string> ImageFilePaths { get; set; } = new();
     public List<ImgFile> ImgFiles { get; set; } = new();
     public IImageHash HashAlgo = new DifferenceHash();
-    public int completedCount;
+    private int _completedCount = 0;
+    private int _completedCountSync = 0;
+
+    public int CompletedCountSync
+    {
+        get => _completedCountSync;
+        set => this.RaiseAndSetIfChanged(ref _completedCountSync, value);
+    }
+    
+    public string LastFileName { get; set; }
 
     public void ScanAndAdd(ICollection<string> paths)
     {
@@ -35,15 +47,40 @@ public class ImageScanningService : ReactiveObject
 
     public async void ComputeHash()
     {
-        await Task.Run(() => Parallel.ForEach(ImageFilePaths, t =>
+        var tsk = Task.Run(() => Parallel.ForEach(ImageFilePaths, t =>
         {
-            using var img = Image.Load<Rgba32>(t);
-            var hash = HashAlgo.Hash(img);
-            lock(ImgFiles)
+            Debug.WriteLine($"Calculating {t}");
+            try
             {
-                ImgFiles.Add(new ImgFile(t, img.Width, img.Height, hash));
+                using var img = Image.Load<Rgba32>(t);
+                var hash = HashAlgo.Hash(img);
+                lock (ImgFiles)
+                {
+                    ImgFiles.Add(new ImgFile(t, img.Width, img.Height, hash));
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine("..." + e.Message);
+            }
+
+            lock (this)
+            {
+                ++_completedCount;
             }
         }));
+
+        while (!tsk.IsCompleted)
+        {
+            await Task.Delay(200);
+            lock(ImgFiles)
+            {
+                CompletedCountSync = _completedCount;
+                LastFileName = ImgFiles?.LastOrDefault()?.FilePath ?? string.Empty;
+            }
+            
+        }
+        CompletedCountSync = _completedCount;
 
     }
     

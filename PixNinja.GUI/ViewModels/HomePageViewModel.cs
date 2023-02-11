@@ -1,17 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-
-using MessageBox.Avalonia;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using PixNinja.GUI.Services;
-using PixNinja.GUI.Views;
-
 using ReactiveUI;
 
 namespace PixNinja.GUI.ViewModels
@@ -19,11 +13,13 @@ namespace PixNinja.GUI.ViewModels
     public class HomePageViewModel : ViewModelBase
     {
         private readonly WindowStateService _windowStateService;
+        private readonly ImageScanningService _imageScanningService;
         private string _inputPath = "";
 
-        public HomePageViewModel(WindowStateService windowStateService, Interaction<MessageBoxStandardParams, Task<ButtonResult>> showMessageBox)
+        public HomePageViewModel(WindowStateService windowStateService, Interaction<MessageBoxStandardParams, Task<ButtonResult>> showMessageBox, ImageScanningService imageScanningService)
         {
             _windowStateService = windowStateService;
+            _imageScanningService = imageScanningService;
             ShowMessageBox = showMessageBox;
         }
 
@@ -40,7 +36,7 @@ namespace PixNinja.GUI.ViewModels
         }
 
         public ObservableCollection<string> Paths { get; set; } = new();
-        
+
         public void AddPath()
         {
             if (Directory.Exists(InputPath))
@@ -77,25 +73,16 @@ namespace PixNinja.GUI.ViewModels
             }
         }
 
-        public async void Browse()
+        public void Remove(object item)
         {
-            OpenFolderDialog ofd = new();
-            var result = await ofd.ShowAsync(App.GetCurrentMainWindow());
-            if (result != null)
-            {
-                InputPath = result;
-                this.RaisePropertyChanged(nameof(InputPath));
-            }
-        }
-
-        public void Remove(string item)
-        {
-            Paths.Remove(item);
+            Paths.Remove((string)item);
         }
 
         public void StartScan()
         {
             _windowStateService.Step = 1;
+            _imageScanningService.ScanAndAdd(Paths);
+            _imageScanningService.ComputeHash();
         }
     }
 }

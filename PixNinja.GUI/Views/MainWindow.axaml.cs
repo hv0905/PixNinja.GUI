@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.ReactiveUI;
+using Avalonia.Threading;
 using MessageBox.Avalonia;
 using PixNinja.GUI.ViewModels;
 
