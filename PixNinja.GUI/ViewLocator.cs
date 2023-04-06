@@ -9,10 +9,10 @@ namespace PixNinja.GUI
 {
     public class ViewLocator : IDataTemplate
     {
-        public Control Build(object data)
+        public Control Build(object? data)
         {
-            var name = data.GetType().FullName!.Replace("ViewModel", "View");
-            var type = Type.GetType(name);
+            var name = data?.GetType().FullName!.Replace("ViewModel", "View");
+            var type = name != null ? Type.GetType(name) : null;
 
             if (type != null)
             {

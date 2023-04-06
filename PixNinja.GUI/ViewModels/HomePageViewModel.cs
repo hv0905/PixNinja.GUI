@@ -2,6 +2,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Avalonia.Controls;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
@@ -21,6 +22,47 @@ namespace PixNinja.GUI.ViewModels
             _windowStateService = windowStateService;
             _imageScanningService = imageScanningService;
             ShowMessageBox = showMessageBox;
+
+            AddPath = ReactiveCommand.Create(() =>
+            {
+                if (Directory.Exists(InputPath))
+                {
+                    if (!Paths.Contains(InputPath))
+                    {
+                        Paths.Add(InputPath);
+                        InputPath = string.Empty;
+                    }
+                    else
+                    {
+                        ShowMessageBox.Handle(new()
+                        {
+                            ContentTitle = "Warning",
+                            ContentMessage = "The given path is already exists in the queue.",
+                            ButtonDefinitions = ButtonEnum.Ok,
+                            Icon = Icon.Warning,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        }).Subscribe();
+                    }
+                }
+                else
+                {
+                    ShowMessageBox.Handle(new()
+                    {
+                        ContentTitle = "Warning",
+                        ContentMessage = "The given path doesn't exist, or cannot access.",
+                        ButtonDefinitions = ButtonEnum.Ok,
+                        Icon = Icon.Warning,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    }).Subscribe();
+                }
+            }, this.WhenAnyValue(t => t.InputPath, t => !string.IsNullOrEmpty(t)));
+            
+            StartScan = ReactiveCommand.Create(() =>
+                {
+                    _windowStateService.Step = 1;
+                    _imageScanningService.ScanAndAdd(Paths);
+                    _imageScanningService.ComputeHash();
+                }, Paths.WhenAnyValue(t => t.Count, t => t != 0));
         }
 
         public HomePageViewModel()
@@ -37,52 +79,13 @@ namespace PixNinja.GUI.ViewModels
 
         public ObservableCollection<string> Paths { get; set; } = new();
 
-        public void AddPath()
-        {
-            if (Directory.Exists(InputPath))
-            {
-                if (!Paths.Contains(InputPath))
-                {
-                    Paths.Add(InputPath);
-                    InputPath = string.Empty;
-                    this.RaisePropertyChanged(nameof(InputPath));
-                    this.RaisePropertyChanged(nameof(Paths));
-                }
-                else
-                {
-                    ShowMessageBox.Handle(new()
-                    {
-                        ContentTitle = "Warning",
-                        ContentMessage = "The given path is already exists in the queue.",
-                        ButtonDefinitions = ButtonEnum.Ok,
-                        Icon = Icon.Warning,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    }).Subscribe();
-                }
-            }
-            else
-            {
-                ShowMessageBox.Handle(new()
-                {
-                    ContentTitle = "Warning",
-                    ContentMessage = "The given path doesn't exist, or cannot access.",
-                    ButtonDefinitions = ButtonEnum.Ok,
-                    Icon = Icon.Warning,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                }).Subscribe();
-            }
-        }
+        public ICommand StartScan { get; }
+        
+        public ICommand AddPath { get; }
 
         public void Remove(object item)
         {
             Paths.Remove((string)item);
-        }
-
-        public void StartScan()
-        {
-            _windowStateService.Step = 1;
-            _imageScanningService.ScanAndAdd(Paths);
-            _imageScanningService.ComputeHash();
         }
     }
 }

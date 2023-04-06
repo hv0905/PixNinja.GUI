@@ -15,11 +15,6 @@ public partial class HomePage : ReactiveUserControl<HomePageViewModel>
         InitializeComponent();
     }
 
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
-
     private async void Button_OnClick(object? sender, RoutedEventArgs e)
     {
         var result = await TopLevel.GetTopLevel(this)!.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions()

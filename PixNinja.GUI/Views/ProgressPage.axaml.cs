@@ -12,9 +12,4 @@ public partial class ProgressPage : ReactiveUserControl<ProgressPageViewModel>
     {
         InitializeComponent();
     }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
 }

@@ -31,9 +31,9 @@ namespace PixNinja.GUI
 
         public static Window GetCurrentMainWindow()
         {
-            if (Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                return desktop.MainWindow;
+                return desktop.MainWindow!;
             }
             else
             {

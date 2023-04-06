@@ -37,6 +37,7 @@
     </ExperimentalAcrylicBorder>
     <local:HomePage DataContext="{Binding HomePageViewModel}" Margin="16" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsVisible="{Binding DataContext.DisplayHomePage ,ElementName=Root  }"></local:HomePage>
     <local:ProgressPage DataContext="{Binding ProgressPageViewModel}" Margin="16" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsVisible="{Binding DataContext.DisplayProgressPage ,ElementName=Root  }"></local:ProgressPage>
+    <local:ComparePage HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
   </Panel>
   
 

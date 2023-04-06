@@ -3,7 +3,6 @@ using Avalonia.ReactiveUI;
 using Avalonia.Threading;
 using MessageBox.Avalonia;
 using PixNinja.GUI.ViewModels;
-
 using ReactiveUI;
 
 namespace PixNinja.GUI.Views
@@ -13,14 +12,13 @@ namespace PixNinja.GUI.Views
         public MainWindow()
         {
             InitializeComponent();
-            Activated += (e, args) =>
+            this.WhenActivated(d =>
             {
-                ViewModel!.ShowMessageBox.RegisterHandler(t =>
+                d(ViewModel!.ShowMessageBox.RegisterHandler(t =>
                 {
                     t.SetOutput(MessageBoxManager.GetMessageBoxStandardWindow(t.Input).ShowDialog(this));
-                });
-                //ViewModel!.Window = this;
-            };
+                }));
+            });
         }
     }
 }
