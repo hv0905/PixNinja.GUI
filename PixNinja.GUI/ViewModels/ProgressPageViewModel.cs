@@ -32,4 +32,12 @@ public class ProgressPageViewModel : ViewModelBase
             .ToProperty(this, t => t.Progress);
 
     }
+
+    [Obsolete("For design purpose only.")]
+#pragma warning disable CS8618
+    public ProgressPageViewModel()
+#pragma warning restore CS8618
+    {
+        
+    }
 }

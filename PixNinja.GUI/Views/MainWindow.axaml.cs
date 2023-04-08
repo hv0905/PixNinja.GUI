@@ -1,3 +1,4 @@
+using System.Reactive.Disposables;
 using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using Avalonia.Threading;
@@ -14,10 +15,10 @@ namespace PixNinja.GUI.Views
             InitializeComponent();
             this.WhenActivated(d =>
             {
-                d(ViewModel!.ShowMessageBox.RegisterHandler(t =>
+                ViewModel!.ShowMessageBox.RegisterHandler(t =>
                 {
                     t.SetOutput(MessageBoxManager.GetMessageBoxStandardWindow(t.Input).ShowDialog(this));
-                }));
+                }).DisposeWith(d);
             });
         }
     }

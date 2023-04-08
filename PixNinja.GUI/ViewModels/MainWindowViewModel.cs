@@ -1,6 +1,4 @@
-﻿using System;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using PixNinja.GUI.Services;
