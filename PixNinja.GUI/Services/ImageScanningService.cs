@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -103,7 +102,7 @@ public class ImageScanningService : ReactiveObject
         Dsu dsu = new(ImgFiles.Count);
         foreach (var item in ImgFiles)
         {
-            var result = _imgTree!.Search(item, Similarity);
+            var result = _imgTree!.SearchByMaxDist(item, Similarity);
             result.RemoveAll(t => t.Item1.Id == item.Id);
             result.ForEach(t => dsu.Union(item.Id, t.Item1.Id));
         }
@@ -123,7 +122,7 @@ public class ImageScanningService : ReactiveObject
         }
         
         _imgGroups = new();
-        foreach (var (key, value) in groupsDict)
+        foreach (var (_, value) in groupsDict)
         {
             if (value.Count > 1)
             {

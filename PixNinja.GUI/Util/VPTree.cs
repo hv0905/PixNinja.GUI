@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PixNinja.GUI.Util;
 
@@ -28,9 +29,11 @@ public sealed class VpTree<T>
         _root = BuildFromPoints(0, newItems.Length);
     }
 
-    public List<(T, DistType)> SearchByMaxDist(T target, int maxDist)
+    public List<(T, DistType)> SearchByMaxDist(T query, int maxDist)
     {
-        throw new NotImplementedException();
+        List<HeapItem> result = new();
+        SearchByMaxd(_root, query, maxDist, result);
+        return result.Select(t => (_items[t.Index], t.Dist)).ToList();
     }
 
     public List<(T, DistType)> Search(T target, int numberOfResults)
@@ -180,6 +183,53 @@ public sealed class VpTree<T>
             if (dist - this._tau <= node.Threshold)
             {
                 this.Search(node.Left, target, numberOfResults, closestHits);
+            }
+        }
+    }
+    
+    private void SearchByMaxd(Node? node, T target, int maxd, List<HeapItem> closestHits)
+    {
+        if (node == null)
+        {
+            return;
+        }
+
+        DistType dist = this._calculateDistance(this._items[node.Index], target);
+
+        // We found entry with shorter distance
+        if (dist < maxd)
+        {
+            // Add new hit
+            closestHits.Add(new HeapItem(node.Index, dist));
+        }
+
+        if (node.Left == null && node.Right == null)
+        {
+            return;
+        }
+
+        if (dist < node.Threshold)
+        {
+            if (dist - maxd <= node.Threshold)
+            {
+                this.SearchByMaxd(node.Left, target, maxd, closestHits);
+            }
+
+            if (dist + maxd >= node.Threshold)
+            {
+                this.SearchByMaxd(node.Right, target, maxd, closestHits);
+            }
+        }
+        else
+        {
+            if (dist + maxd >= node.Threshold)
+            {
+                this.SearchByMaxd(node.Right, target, maxd, closestHits);
+            }
+
+            if (dist - maxd <= node.Threshold)
+            {
+                this.SearchByMaxd(node.Left, target, maxd, closestHits);
             }
         }
     }
