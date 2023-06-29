@@ -18,6 +18,7 @@ public class Dsu
 
     public void Union(int a, int b)
     {
+        if (a == b) return;
         _pa[Find(a)] = Find(b);
     }
 }

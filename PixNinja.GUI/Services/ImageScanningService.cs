@@ -68,7 +68,7 @@ public class ImageScanningService : ReactiveObject
                 Debug.WriteLine("..." + e.Message);
             }
 
-            lock (this)
+            lock (_lockHackCal)
             {
                 ++_completedCount;
             }
@@ -87,23 +87,20 @@ public class ImageScanningService : ReactiveObject
         CompletedCountSync = _completedCount;
 
         for (var i = 0; i < ImgFiles.Count; i++) ImgFiles[i].Id = i;
-
-        // Building Data Hashes
-        _imgTree = new VpTree<ImgFile>(ImgFiles.ToArray(), (x, y) => x == y ? 0 : (int)x.ImageDiff(y));
         
         // Summarize groups
-        SummarizeGroupsFromTree();
-        
-        
+        await Task.Run(SummarizeGroupsFromTree);
     }
 
     public void SummarizeGroupsFromTree()
     {
+        // Building Data Hashes
+        _imgTree = new VpTree<ImgFile>(ImgFiles.ToArray(), (x, y) => (int)x.ImageDiff(y));
+        
         Dsu dsu = new(ImgFiles.Count);
         foreach (var item in ImgFiles)
         {
             var result = _imgTree!.SearchByMaxDist(item, Similarity);
-            result.RemoveAll(t => t.Item1.Id == item.Id);
             result.ForEach(t => dsu.Union(item.Id, t.Item1.Id));
         }
 
@@ -111,9 +108,9 @@ public class ImageScanningService : ReactiveObject
         foreach (var item in ImgFiles)
         {
             var g = dsu.Find(item.Id);
-            if (groupsDict.ContainsKey(g))
+            if (groupsDict.TryGetValue(g, out var value))
             {
-                groupsDict[g].Add(item);
+                value.Add(item);
             }
             else
             {
