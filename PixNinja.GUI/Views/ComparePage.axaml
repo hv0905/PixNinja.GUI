@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:PixNinja.GUI.ViewModels"
+             xmlns:uiutil="clr-namespace:PixNinja.GUI.UIUtil"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:DataType="local:ComparePageViewModel"
              xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              x:Class="PixNinja.GUI.Views.ComparePage">
@@ -16,6 +17,9 @@
             <Setter Property="Margin" Value="4"></Setter>
         </Style>
     </UserControl.Styles>
+    <UserControl.Resources>
+        <uiutil:FileSizeValueConverter x:Key="FileSizeValueConverter"></uiutil:FileSizeValueConverter>
+    </UserControl.Resources>
     <Grid RowDefinitions="*,Auto">
         <ListBox Margin="8" SelectedIndex="{CompiledBinding CurrentSelected}" ItemsSource="{CompiledBinding ListContents}">
                 <ListBox.ItemTemplate>
@@ -32,15 +36,15 @@
                             </Grid.Styles>
                             <Image Source="{CompiledBinding Image}" Grid.RowSpan="2" />
                             <StackPanel Grid.Row="0" Grid.Column="1" Margin="12" Spacing="8">
-                                <TextBlock Text="Ciallo.jpg" FontSize="20" />
+                                <TextBlock Text="{CompiledBinding FileName}" FontSize="20" />
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Classes="MinorInfo" Text="114MB" />
+                                    <TextBlock Classes="MinorInfo" Text="{CompiledBinding Size, Converter={StaticResource FileSizeValueConverter} }" />
                                     <TextBlock Classes="MinorInfo" Text="|" />
-                                    <TextBlock Classes="MinorInfo" Text="3840 x 2160" />
-                                    <Border Classes="Tag" Background="#16a085">
+                                    <TextBlock Classes="MinorInfo" Text="{CompiledBinding Resolution}" />
+                                    <Border Classes="Tag" Background="#16a085" IsVisible="{CompiledBinding TagBestSize}">
                                         <TextBlock Foreground="White" Text="Best Size" />
                                     </Border>
-                                    <Border Classes="Tag" Background="#2980b9">
+                                    <Border Classes="Tag" Background="#2980b9" IsVisible="{CompiledBinding TagBestResolution}">
                                         <TextBlock Foreground="White" Text="Best Resolution" />
                                     </Border>
                                 </StackPanel>
@@ -51,7 +55,7 @@
                                     </Border>
                                 </StackPanel>
                                 <TextBlock Text="Full Path:" />
-                                <TextBlock Text="/home/epiphyllum/dir1/dir2/test.jpg" />
+                                <TextBlock Text="{CompiledBinding FilePath}" />
 
                             </StackPanel>
                             <DockPanel HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" LastChildFill="True">
@@ -88,7 +92,7 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         <DockPanel Grid.Row="1" LastChildFill="True">
-            <Button Classes="tool" DockPanel.Dock="Left">
+            <Button Classes="tool" DockPanel.Dock="Left" Command="{Binding Previous}">
                 <StackPanel Orientation="Horizontal">
                     <i:Icon Value="fa-solid fa-arrow-left" />
                     <TextBlock>Previous Group</TextBlock>
@@ -101,19 +105,19 @@
                     </MenuFlyout>
                 </DropDownButton.Flyout>
             </DropDownButton>
-            <Button Classes="tool" DockPanel.Dock="Right">
+            <Button Classes="tool" DockPanel.Dock="Right" Command="{Binding Complete}">
                 <StackPanel Orientation="Horizontal">
                     <i:Icon Value="fa-solid fa-forward-step" />
                     <TextBlock>Complete</TextBlock>
                 </StackPanel>
             </Button>
-            <Button Classes="tool" DockPanel.Dock="Right">
+            <Button Classes="tool" DockPanel.Dock="Right" Command="{Binding Next}">
                 <StackPanel Orientation="Horizontal">
                     <i:Icon Value="fa-solid fa-arrow-right" />
                     <TextBlock>Next Group</TextBlock>
                 </StackPanel>
             </Button>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Group: 1 / 10</TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{CompiledBinding StatusbarText}"/>
         </DockPanel>
     </Grid>
 </UserControl>

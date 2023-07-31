@@ -9,8 +9,8 @@ namespace PixNinja.GUI.Models;
 
 public class ImageCompareElementModel : ReactiveObject
 {
-    private string FilePath { get; }
-    private string FileName { get; }
+    public string FilePath { get; }
+    public string FileName { get; }
     public ulong Size { get; }
     public string Resolution { get; }
     public bool TagBestResolution { get; }

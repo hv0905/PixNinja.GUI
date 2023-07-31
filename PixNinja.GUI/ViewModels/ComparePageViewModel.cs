@@ -52,14 +52,14 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
         _uiInteractiveService = uiInteractiveService;
         var statusUpdateOb = this.WhenAnyValue(t => t.CurrentGroupId, t => t._imageScanningService.ImgGroups);
         _statusbarText = statusUpdateOb
-            .Select(t => t.Item2 != null ? $"Group: {t.Item1} / {t.Item2.Count}" : string.Empty)
+            .Select(t => t.Item2 != null ? $"Group: {t.Item1 + 1} / {t.Item2.Count}" : string.Empty)
             .ToProperty(this, t => t.StatusbarText);
 
         Next = ReactiveCommand.Create(() =>
         {
             ++CurrentGroupId;
             PrepareContent();
-        }, statusUpdateOb.Select(t => t.Item1 < t.Item2.Count - 1));
+        }, statusUpdateOb.Select(t => t.Item1 < (t.Item2?.Count ?? 0) - 1));
 
         Previous = ReactiveCommand.Create(() =>
         {
@@ -93,15 +93,17 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
     public void PrepareContent()
     {
         ListContents.Clear();
-        var bestSize = CurrentGroup.MaxBy(t => t.FileSize);
-        var bestRes = CurrentGroup.MaxBy(t => (long)t.Width * t.Height);
+        var bestSize = CurrentGroup.MaxBy(t => t.FileSize)!;
+        var bestRes = CurrentGroup.MaxBy(t => (long)t.Width * t.Height)!;
 
 
         ListContents.AddRange(CurrentGroup.Select((t, i) =>
         {
             return new ImageCompareElementModel(t.FilePath, (ulong)new FileInfo(t.FilePath).Length,
-                $"{t.Width} x {t.Height}", t == bestRes, t == bestSize);
+                $"{t.Width} x {t.Height}", t.Width * t.Height == bestRes.Width * bestRes.Height, t.FileSize == bestSize.FileSize);
         }).ToList());
+        
+        UpdateSimilarities();
     }
 
     public void UpdateSimilarities()

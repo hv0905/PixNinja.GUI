@@ -67,10 +67,12 @@ public class ImageScanningService : ReactiveObject
             try
             {
                 using var img = Image.Load<Rgba32>(t);
+                var width = img.Width;
+                var height = img.Height;
                 var hash = HashAlgo.Hash(img);
                 lock (_lockHackCal)
                 {
-                    ImgFiles.Add(new ImgFile(t, img.Width, img.Height, hash, (ulong)new FileInfo(t).Length));
+                    ImgFiles.Add(new ImgFile(t, width, height, hash, (ulong)new FileInfo(t).Length));
                 }
             }
             catch(Exception e)

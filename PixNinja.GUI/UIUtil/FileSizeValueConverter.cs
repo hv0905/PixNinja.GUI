@@ -14,9 +14,9 @@ public class FileSizeValueConverter : IValueConverter
             ulong len = (ulong)value;
             return len switch
             {
-              > 1024 * 1024 * 1024 => $"{len / 1024.0 / 1024.0 / 1024.0}G",
-              > 1024 * 1024 => $"{len / 1024.0 / 1024.0}M",
-              > 1024 => $"{len / 1024.0}K",
+              > 1024 * 1024 * 1024 => $"{(len / 1024.0 / 1024.0 / 1024.0):F2}G",
+              > 1024 * 1024 => $"{(len / 1024.0 / 1024.0):F2}M",
+              > 1024 => $"{(len / 1024.0):F2}K",
               _ => $"{len}B"
             };
         }
