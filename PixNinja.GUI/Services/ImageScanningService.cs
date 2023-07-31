@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Avalonia.Threading;
 using CoenM.ImageHash;
 using CoenM.ImageHash.HashAlgorithms;
 using PixNinja.GUI.Models;
@@ -17,15 +16,15 @@ namespace PixNinja.GUI.Services;
 
 public class ImageScanningService : ReactiveObject
 {
-    public List<string> ImageFilePaths { get; set; } = new();
+    public List<string> ImageFilePaths { get; private set; } = new();
     public List<ImgFile> ImgFiles { get; } = new();
     public IImageHash HashAlgo = new DifferenceHash();
     public int Similarity { get; set; } = 2;
     
-    private int _completedCount = 0;
-    private int _completedCountSync = 0;
-    private VpTree<ImgFile>? _imgTree = null;
-    private List<List<ImgFile>>? _imgGroups = null;
+    private int _completedCount;
+    private int _completedCountSync;
+    private VpTree<ImgFile>? _imgTree;
+    private List<List<ImgFile>>? _imgGroups;
     private object _lockHackCal = new();
 
     public int CompletedCountSync
@@ -53,6 +52,8 @@ public class ImageScanningService : ReactiveObject
                 })
                 .Where(t => t.EndsWith(".jpg") || t.EndsWith(".png") || t.EndsWith(".jpeg") || t.EndsWith(".jfif")));
         }
+
+        ImageFilePaths = ImageFilePaths.Distinct().ToList();
         Trace.WriteLine($"Added {ImageFilePaths.Count} files by scanning.");
     }
 
@@ -142,6 +143,4 @@ public class ImageScanningService : ReactiveObject
 
         return resultGroups;
     }
-    
-    
 }

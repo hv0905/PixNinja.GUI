@@ -9,7 +9,7 @@ public class FileSizeValueConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        if (value is int || value is uint || value is long || value is ulong)
+        if (value is int or uint or long or ulong)
         { 
             ulong len = (ulong)value;
             return len switch

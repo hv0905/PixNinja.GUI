@@ -2,10 +2,9 @@
 using System.IO;
 using System.Reactive.Linq;
 using Avalonia.Media.Imaging;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ReactiveUI;
 
-namespace PixNinja.GUI.Models;
+namespace PixNinja.GUI.ViewModels;
 
 public class ImageCompareElementModel : ReactiveObject
 {

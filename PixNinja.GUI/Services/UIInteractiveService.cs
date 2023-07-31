@@ -24,7 +24,7 @@ public class UIInteractiveService : ReactiveObject
         }).ToTask();
     }
 
-    public async Task<bool> Question(string text, string title = "Warning")
+    public Task<bool> Question(string text, string title = "Warning")
     {
         throw new NotImplementedException();
     }

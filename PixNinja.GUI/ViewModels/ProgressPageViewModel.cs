@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Reactive.Linq;
 using PixNinja.GUI.Services;
 using ReactiveUI;
@@ -35,7 +34,7 @@ public class ProgressPageViewModel : ViewModelBase, IRoutableViewModel
             .ToProperty(this, t => t.Progress);
     }
 
-    public string? UrlPathSegment => "progress";
+    public string UrlPathSegment => "progress";
     public IScreen HostScreen => _routeService.HostWindow;
 
     #region Design

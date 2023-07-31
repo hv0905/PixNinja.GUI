@@ -1,14 +1,10 @@
-﻿using System;
-using PixNinja.GUI.ViewModels;
-using PixNinja.GUI.Views;
+﻿using PixNinja.GUI.ViewModels;
 using ReactiveUI;
 
 namespace PixNinja.GUI.Services;
 
 public class RouteService : ReactiveObject
 {
-    private int _step = 0;
-    
     public HomePageViewModel? HomePageViewModel { get; set; }
     
     public ProgressPageViewModel? ProgressPageViewModel { get; set; }
