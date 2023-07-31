@@ -1,27 +1,23 @@
-using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
 using PixNinja.GUI.Services;
 using ReactiveUI;
 
 namespace PixNinja.GUI.ViewModels
 {
-    public class HomePageViewModel : ViewModelBase
+    public class HomePageViewModel : ViewModelBase, IRoutableViewModel
     {
-        private readonly WindowStateService _windowStateService;
+        private readonly RouteService _routeService;
+        private readonly UIInteractiveService _uiInteractiveService;
         private readonly ImageScanningService _imageScanningService;
         private string _inputPath = "";
 
-        public HomePageViewModel(WindowStateService windowStateService, Interaction<MessageBoxStandardParams, Task<ButtonResult>> showMessageBox, ImageScanningService imageScanningService)
+        public HomePageViewModel(RouteService routeService, UIInteractiveService uiInteractiveService, ImageScanningService imageScanningService)
         {
-            _windowStateService = windowStateService;
+            _routeService = routeService;
+            _uiInteractiveService = uiInteractiveService;
             _imageScanningService = imageScanningService;
-            ShowMessageBox = showMessageBox;
 
             AddPath = ReactiveCommand.Create(() =>
             {
@@ -34,32 +30,20 @@ namespace PixNinja.GUI.ViewModels
                     }
                     else
                     {
-                        ShowMessageBox.Handle(new()
-                        {
-                            ContentTitle = "Warning",
-                            ContentMessage = "The given path is already exists in the queue.",
-                            ButtonDefinitions = ButtonEnum.Ok,
-                            Icon = Icon.Warning,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        }).Subscribe();
+                        _uiInteractiveService.Warning("The given path is already exists in the queue.")
+                            .ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    ShowMessageBox.Handle(new()
-                    {
-                        ContentTitle = "Warning",
-                        ContentMessage = "The given path doesn't exist, or cannot access.",
-                        ButtonDefinitions = ButtonEnum.Ok,
-                        Icon = Icon.Warning,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    }).Subscribe();
+                    _uiInteractiveService.Warning("The given path doesn't exist, or cannot access.")
+                        .ConfigureAwait(false);
                 }
             }, this.WhenAnyValue(t => t.InputPath, t => !string.IsNullOrEmpty(t)));
             
             StartScan = ReactiveCommand.Create(() =>
                 {
-                    _windowStateService.Step = 1;
+                    _routeService.Step = 1;
                     _imageScanningService.ScanAndAdd(Paths);
                     _imageScanningService.ComputeHash();
                 }, Paths.WhenAnyValue(t => t.Count, t => t != 0));
@@ -68,8 +52,6 @@ namespace PixNinja.GUI.ViewModels
         public HomePageViewModel()
         {
         }
-
-        public Interaction<MessageBoxStandardParams, Task<ButtonResult>> ShowMessageBox { get; }
 
         public string InputPath
         {
@@ -87,5 +69,8 @@ namespace PixNinja.GUI.ViewModels
         {
             Paths.Remove((string)item);
         }
+
+        public string? UrlPathSegment => "home";
+        public IScreen HostScreen => _routeService.HostWindow;
     }
 }

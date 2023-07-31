@@ -25,7 +25,7 @@
                 <TextBox HorizontalAlignment="Stretch" Watermark="Input your path..." Text="{CompiledBinding InputPath}"/>
             </DockPanel>
         </StackPanel>
-        <ListBox Grid.Row="1" Margin="16" Items="{CompiledBinding Paths}">
+        <ListBox Grid.Row="1" Margin="16" ItemsSource="{CompiledBinding Paths}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">

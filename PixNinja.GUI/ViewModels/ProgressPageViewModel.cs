@@ -6,17 +6,19 @@ using ReactiveUI;
 
 namespace PixNinja.GUI.ViewModels;
 
-public class ProgressPageViewModel : ViewModelBase
+public class ProgressPageViewModel : ViewModelBase, IRoutableViewModel
 {
     private readonly ImageScanningService _imageScanningService;
+    private readonly RouteService _routeService;
     private readonly ObservableAsPropertyHelper<string> _status;
     private readonly ObservableAsPropertyHelper<int> _progress;
     public string Status => _status.Value;
     public int Progress => _progress.Value;
 
-    public ProgressPageViewModel(ImageScanningService imageScanningService)
+    public ProgressPageViewModel(ImageScanningService imageScanningService, RouteService routeService)
     {
         _imageScanningService = imageScanningService;
+        _routeService = routeService;
 
         var statusUpdateOb = _imageScanningService
             .WhenAnyValue(t => t.CompletedCountSync)
@@ -40,4 +42,7 @@ public class ProgressPageViewModel : ViewModelBase
     {
         
     }
+
+    public string? UrlPathSegment => "progress";
+    public IScreen HostScreen => _routeService.HostWindow;
 }
