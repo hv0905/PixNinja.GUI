@@ -8,7 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="PixNinja.GUI.Views.MainWindow"
-        x:Name="Root"
+        x:Name="Root" MinWidth="800" MinHeight="450"
         Icon="/Assets/avalonia-logo.ico"
         TransparencyLevelHint="AcrylicBlur"
         ExtendClientAreaToDecorationsHint="True"

@@ -12,6 +12,8 @@ public class RouteService : ReactiveObject
     public HomePageViewModel? HomePageViewModel { get; set; }
     
     public ProgressPageViewModel? ProgressPageViewModel { get; set; }
+    
+    public ComparePageViewModel? ComparePageViewModel { get; set; }
 
     public RouteService(IScreen hostWindow)
     {

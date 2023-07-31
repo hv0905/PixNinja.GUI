@@ -23,26 +23,29 @@ public class ProgressPageViewModel : ViewModelBase, IRoutableViewModel
         var statusUpdateOb = _imageScanningService
             .WhenAnyValue(t => t.CompletedCountSync)
             .Where(t => t > 0);
-            
-            
+
+
         _status = statusUpdateOb
-            .Select(t => $"({t} / {_imageScanningService.ImageFilePaths.Count}) Calculating {_imageScanningService.LastFileName}...")
+            .Select(t =>
+                $"({t} / {_imageScanningService.ImageFilePaths.Count}) Calculating {_imageScanningService.LastFileName}...")
             .ToProperty(this, t => t.Status);
 
         _progress = statusUpdateOb
             .Select(t => t * 100 / _imageScanningService.ImageFilePaths.Count)
             .ToProperty(this, t => t.Progress);
-
-    }
-
-    [Obsolete("For design purpose only.")]
-#pragma warning disable CS8618
-    public ProgressPageViewModel()
-#pragma warning restore CS8618
-    {
-        
     }
 
     public string? UrlPathSegment => "progress";
     public IScreen HostScreen => _routeService.HostWindow;
+
+    #region Design
+
+#pragma warning disable CS8618
+    [Obsolete("For design purpose only.")]
+    public ProgressPageViewModel()
+    {
+    }
+#pragma warning restore CS8618
+
+    #endregion
 }

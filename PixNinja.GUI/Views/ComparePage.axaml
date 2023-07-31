@@ -3,9 +3,117 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:local="clr-namespace:PixNinja.GUI.ViewModels"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:DataType="local:ComparePageViewModel"
+             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
              x:Class="PixNinja.GUI.Views.ComparePage">
     <Design.DataContext>
-        <local:ComparePageViewModel/>
+        <local:ComparePageViewModel />
     </Design.DataContext>
+    <UserControl.Styles>
+        <Style Selector="Button.tool">
+            <Setter Property="MinWidth" Value="100" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Margin" Value="4"></Setter>
+        </Style>
+    </UserControl.Styles>
+    <Grid RowDefinitions="*,Auto">
+        <ListBox Margin="8" SelectedIndex="{CompiledBinding CurrentSelected}" ItemsSource="{CompiledBinding ListContents}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="*,Auto">
+                            <Grid.Styles>
+                                <Style Selector="TextBlock.MinorInfo">
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+                                </Style>
+                                <Style Selector="Border.Tag">
+                                    <Setter Property="CornerRadius" Value="4" />
+                                    <Setter Property="Padding" Value="4" />
+                                </Style>
+                            </Grid.Styles>
+                            <Image Source="{CompiledBinding Image}" Grid.RowSpan="2" />
+                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="12" Spacing="8">
+                                <TextBlock Text="Ciallo.jpg" FontSize="20" />
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Classes="MinorInfo" Text="114MB" />
+                                    <TextBlock Classes="MinorInfo" Text="|" />
+                                    <TextBlock Classes="MinorInfo" Text="3840 x 2160" />
+                                    <Border Classes="Tag" Background="#16a085">
+                                        <TextBlock Foreground="White" Text="Best Size" />
+                                    </Border>
+                                    <Border Classes="Tag" Background="#2980b9">
+                                        <TextBlock Foreground="White" Text="Best Resolution" />
+                                    </Border>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Classes="MinorInfo" Text="Similarity:" />
+                                    <Border Classes="Tag" Background="#22a6b3">
+                                        <TextBlock Foreground="White" Text="Exact Copy" />
+                                    </Border>
+                                </StackPanel>
+                                <TextBlock Text="Full Path:" />
+                                <TextBlock Text="/home/epiphyllum/dir1/dir2/test.jpg" />
+
+                            </StackPanel>
+                            <DockPanel HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" LastChildFill="True">
+                                <SplitButton Classes="tool" DockPanel.Dock="Right">
+                                    <StackPanel Orientation="Horizontal">
+                                        <i:Icon Value="fa-solid fa-up-right-from-square" />
+                                        <TextBlock Text="Open" />
+                                    </StackPanel>
+                                    <SplitButton.Flyout>
+                                        <MenuFlyout>
+                                            <MenuItem i:MenuItem.Icon="fa-regular fa-folder"
+                                                      Header="Show In File Explorer">
+                                            </MenuItem>
+                                        </MenuFlyout>
+                                    </SplitButton.Flyout>
+                                </SplitButton>
+                                <Border DockPanel.Dock="Left" Classes="Selected" CornerRadius="4" BorderThickness="2"
+                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="16 4 16 4">
+                                    <Border.Styles>
+                                        <Style Selector="Border.Selected">
+                                            <Setter Property="Background" Value="#e74c3c"></Setter>
+                                        </Style>
+                                        <Style Selector="Border.Selected TextBlock">
+                                            <Setter Property="Foreground" Value="White"></Setter>
+                                        </Style>
+                                    </Border.Styles>
+                                    <CheckBox Margin="2 0 2 0 " HorizontalAlignment="Stretch">
+                                        <TextBlock Text="Mark for removal"></TextBlock>
+                                    </CheckBox>
+                                </Border>
+                            </DockPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        <DockPanel Grid.Row="1" LastChildFill="True">
+            <Button Classes="tool" DockPanel.Dock="Left">
+                <StackPanel Orientation="Horizontal">
+                    <i:Icon Value="fa-solid fa-arrow-left" />
+                    <TextBlock>Previous Group</TextBlock>
+                </StackPanel>
+            </Button>
+            <DropDownButton Content="Options">
+                <DropDownButton.Flyout>
+                    <MenuFlyout>
+                        <MenuItem i:MenuItem.Icon="fa-file-export" Header="Export Raw Data As Json"></MenuItem>
+                    </MenuFlyout>
+                </DropDownButton.Flyout>
+            </DropDownButton>
+            <Button Classes="tool" DockPanel.Dock="Right">
+                <StackPanel Orientation="Horizontal">
+                    <i:Icon Value="fa-solid fa-forward-step" />
+                    <TextBlock>Complete</TextBlock>
+                </StackPanel>
+            </Button>
+            <Button Classes="tool" DockPanel.Dock="Right">
+                <StackPanel Orientation="Horizontal">
+                    <i:Icon Value="fa-solid fa-arrow-right" />
+                    <TextBlock>Next Group</TextBlock>
+                </StackPanel>
+            </Button>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Group: 1 / 10</TextBlock>
+        </DockPanel>
+    </Grid>
 </UserControl>

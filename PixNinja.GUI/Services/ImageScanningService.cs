@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using CoenM.ImageHash;
 using CoenM.ImageHash.HashAlgorithms;
 using PixNinja.GUI.Models;
@@ -32,6 +33,12 @@ public class ImageScanningService : ReactiveObject
         get => _completedCountSync;
         set => this.RaiseAndSetIfChanged(ref _completedCountSync, value);
     }
+
+    public List<List<ImgFile>>? ImgGroups
+    {
+        get => _imgGroups;
+        set => this.RaiseAndSetIfChanged(ref _imgGroups, value);
+    }
     
     public string LastFileName { get; set; }
 
@@ -49,7 +56,7 @@ public class ImageScanningService : ReactiveObject
         Trace.WriteLine($"Added {ImageFilePaths.Count} files by scanning.");
     }
 
-    public async void ComputeHash()
+    public async Task ComputeHash()
     {
         var tsk = Task.Run(() => Parallel.ForEach(ImageFilePaths, new ParallelOptions()
         {
@@ -63,7 +70,7 @@ public class ImageScanningService : ReactiveObject
                 var hash = HashAlgo.Hash(img);
                 lock (_lockHackCal)
                 {
-                    ImgFiles.Add(new ImgFile(t, img.Width, img.Height, hash));
+                    ImgFiles.Add(new ImgFile(t, img.Width, img.Height, hash, (ulong)new FileInfo(t).Length));
                 }
             }
             catch(Exception e)
@@ -92,10 +99,11 @@ public class ImageScanningService : ReactiveObject
         for (var i = 0; i < ImgFiles.Count; i++) ImgFiles[i].Id = i;
         
         // Summarize groups
-        await Task.Run(SummarizeGroupsFromTree);
+        var result = await Task.Run(SummarizeGroupsFromTree);
+        ImgGroups = result;
     }
 
-    public void SummarizeGroupsFromTree()
+    public List<List<ImgFile>> SummarizeGroupsFromTree()
     {
         // Building Data Hashes
         _imgTree = new VpTree<ImgFile>(ImgFiles.ToArray(), (x, y) => (int)x.ImageDiff(y));
@@ -121,15 +129,16 @@ public class ImageScanningService : ReactiveObject
             }
         }
         
-        _imgGroups = new();
+        var resultGroups = new List<List<ImgFile>>();
         foreach (var (_, value) in groupsDict)
         {
             if (value.Count > 1)
             {
-                _imgGroups.Add(value);
+                resultGroups.Add(value);
             }
         }
-        Debug.WriteLine(_imgGroups.Count);
+
+        return resultGroups;
     }
     
     
