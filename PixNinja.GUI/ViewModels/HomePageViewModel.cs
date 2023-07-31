@@ -1,3 +1,4 @@
+using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Input;
@@ -13,7 +14,8 @@ namespace PixNinja.GUI.ViewModels
         private readonly ImageScanningService _imageScanningService;
         private string _inputPath = "";
 
-        public HomePageViewModel(RouteService routeService, UIInteractiveService uiInteractiveService, ImageScanningService imageScanningService)
+        public HomePageViewModel(RouteService routeService, UIInteractiveService uiInteractiveService,
+            ImageScanningService imageScanningService)
         {
             _routeService = routeService;
             _uiInteractiveService = uiInteractiveService;
@@ -40,13 +42,16 @@ namespace PixNinja.GUI.ViewModels
                         .ConfigureAwait(false);
                 }
             }, this.WhenAnyValue(t => t.InputPath, t => !string.IsNullOrEmpty(t)));
-            
+
             StartScan = ReactiveCommand.Create(() =>
+            {
+                HostScreen.Router.Navigate.Execute(_routeService.ProgressPageViewModel).Subscribe(t =>
                 {
-                    _routeService.Step = 1;
                     _imageScanningService.ScanAndAdd(Paths);
                     _imageScanningService.ComputeHash();
-                }, Paths.WhenAnyValue(t => t.Count, t => t != 0));
+                });
+                
+            }, Paths.WhenAnyValue(t => t.Count, t => t != 0));
         }
 
         public HomePageViewModel()
@@ -62,7 +67,7 @@ namespace PixNinja.GUI.ViewModels
         public ObservableCollection<string> Paths { get; set; } = new();
 
         public ICommand StartScan { get; }
-        
+
         public ICommand AddPath { get; }
 
         public void Remove(object item)

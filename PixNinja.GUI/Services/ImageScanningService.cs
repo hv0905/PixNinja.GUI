@@ -51,7 +51,10 @@ public class ImageScanningService : ReactiveObject
 
     public async void ComputeHash()
     {
-        var tsk = Task.Run(() => Parallel.ForEach(ImageFilePaths, t =>
+        var tsk = Task.Run(() => Parallel.ForEach(ImageFilePaths, new ParallelOptions()
+        {
+            MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount - 4, Environment.ProcessorCount / 2) // Use default settings will stuck the window
+        }, t =>
         {
             Debug.WriteLine($"Calculating {t}");
             try

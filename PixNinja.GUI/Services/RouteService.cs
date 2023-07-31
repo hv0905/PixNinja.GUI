@@ -20,11 +20,5 @@ public class RouteService : ReactiveObject
 
     public IScreen HostWindow { get; }
 
-    public int Step
-    {
-        get => _step;
-        set => this.RaiseAndSetIfChanged(ref _step, value);
-    }
-
 
 }
