@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Windows.Input;
 using DynamicData;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using PixNinja.GUI.Models;
 using PixNinja.GUI.Services;
 using ReactiveUI;
