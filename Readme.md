@@ -1,5 +1,7 @@
 ﻿# PixNinja.GUI
 
+ [![Windows Build](https://github.com/hv0905/PixNinja.GUI/actions/workflows/windows-build.yml/badge.svg)](https://github.com/hv0905/PixNinja.GUI/actions/workflows/windows-build.yml)
+
 A handy utility for scanning and analyzing all duplicate images on your system using Image Hash.
 
 **Warning: This project is still a work in progress (WIP), and most of the features may not work properly.**
