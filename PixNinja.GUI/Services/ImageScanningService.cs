@@ -73,7 +73,7 @@ public class ImageScanningService : ReactiveObject
                 var hash = HashAlgo.Hash(img);
                 lock (_lockHackCal)
                 {
-                    ImgFiles.Add(new ImgFile(t, width, height, hash, (ulong)new FileInfo(t).Length));
+                    ImgFiles.Add(new ImgFile(t, width, height, hash, new FileInfo(t).Length));
                 }
             }
             catch(Exception e)

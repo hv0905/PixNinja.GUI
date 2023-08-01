@@ -38,7 +38,7 @@
                             <StackPanel Grid.Row="0" Grid.Column="1" Margin="12" Spacing="8">
                                 <TextBlock Text="{CompiledBinding FileName}" FontSize="20" />
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Classes="MinorInfo" Text="{CompiledBinding Size, Converter={StaticResource FileSizeValueConverter} }" />
+                                    <TextBlock Classes="MinorInfo" Text="{CompiledBinding Img.FileSize, Converter={StaticResource FileSizeValueConverter} }" />
                                     <TextBlock Classes="MinorInfo" Text="|" />
                                     <TextBlock Classes="MinorInfo" Text="{CompiledBinding Resolution}" />
                                     <Border Classes="Tag" Background="#16a085" IsVisible="{CompiledBinding TagBestSize}">
@@ -51,28 +51,28 @@
                                 <StackPanel Orientation="Horizontal" Spacing="8">
                                     <TextBlock Classes="MinorInfo" Text="Similarity:" />
                                     <Border Classes="Tag" Background="#22a6b3">
-                                        <TextBlock Foreground="White" Text="Exact Copy" />
+                                        <TextBlock Foreground="White" Text="{CompiledBinding SimilarityText}" />
                                     </Border>
                                 </StackPanel>
                                 <TextBlock Text="Full Path:" />
-                                <TextBlock Text="{CompiledBinding FilePath}" />
+                                <TextBlock Text="{CompiledBinding Img.FilePath}" />
 
                             </StackPanel>
                             <DockPanel HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" LastChildFill="True">
-                                <SplitButton Classes="tool" DockPanel.Dock="Right">
+                                <SplitButton Classes="tool" DockPanel.Dock="Right" Command="{Binding OpenExternal}">
                                     <StackPanel Orientation="Horizontal">
                                         <i:Icon Value="fa-solid fa-up-right-from-square" />
                                         <TextBlock Text="Open" />
                                     </StackPanel>
                                     <SplitButton.Flyout>
                                         <MenuFlyout>
-                                            <MenuItem i:MenuItem.Icon="fa-regular fa-folder"
+                                            <MenuItem i:MenuItem.Icon="fa-regular fa-folder" Command="{Binding OpenPath}"
                                                       Header="Show In File Explorer">
                                             </MenuItem>
                                         </MenuFlyout>
                                     </SplitButton.Flyout>
                                 </SplitButton>
-                                <Border DockPanel.Dock="Left" Classes="Selected" CornerRadius="4" BorderThickness="2"
+                                <Border DockPanel.Dock="Left" Classes.Selected="{CompiledBinding #_checkRemoval.IsChecked}" CornerRadius="4" BorderThickness="2"
                                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="16 4 16 4">
                                     <Border.Styles>
                                         <Style Selector="Border.Selected">
@@ -82,7 +82,7 @@
                                             <Setter Property="Foreground" Value="White"></Setter>
                                         </Style>
                                     </Border.Styles>
-                                    <CheckBox Margin="2 0 2 0 " HorizontalAlignment="Stretch">
+                                    <CheckBox x:Name="_checkRemoval" Margin="2 0 2 0 " HorizontalAlignment="Stretch">
                                         <TextBlock Text="Mark for removal"></TextBlock>
                                     </CheckBox>
                                 </Border>

@@ -2,19 +2,19 @@
 using System.IO;
 using System.Reactive.Linq;
 using Avalonia.Media.Imaging;
+using PixNinja.GUI.Models;
 using ReactiveUI;
 
 namespace PixNinja.GUI.ViewModels;
 
 public class ImageCompareElementModel : ReactiveObject
 {
-    public string FilePath { get; }
-    public string FileName { get; }
-    public ulong Size { get; }
-    public string Resolution { get; }
+    public string FileName => Path.GetFileName(Img.FilePath);
+    public string Resolution => $"{Img.Width} x {Img.Height}";
     public bool TagBestResolution { get; }
     public bool TagBestSize { get; }
     public Bitmap Image { get; }
+    public ImgFile Img { get; }
 
     private bool _shouldRemove;
     private int _similarity;
@@ -34,19 +34,20 @@ public class ImageCompareElementModel : ReactiveObject
 
     public string SimilarityText => _similarityText.Value;
 
-    public ImageCompareElementModel(string filePath, ulong size, string resolution, bool tagBestResolution, bool tagBestSize)
+    public ImageCompareElementModel(ImgFile img, bool tagBestResolution, bool tagBestSize)
     {
-        FilePath = filePath;
-        Size = size;
-        Resolution = resolution;
+        Img = img;
         TagBestResolution = tagBestResolution;
         TagBestSize = tagBestSize;
-        Image = new Bitmap(filePath);
-        FileName = Path.GetFileName(FilePath);
-        
+        Image = new Bitmap(Img.FilePath);
 
         _similarityText = this.WhenAnyValue(t => t.Similarity)
-            .Select(t => t == -1 ? "Exact Copy" : $"{t} %")
+            .Select(t => t switch
+            {
+                -2 => "Base",
+                -1 => "Exact Copy",
+                _ => $"{t} %"
+            })
             .ToProperty(this, t => t.SimilarityText);
     }
 
@@ -55,15 +56,14 @@ public class ImageCompareElementModel : ReactiveObject
     public void OpenExternal()
     {
         // TODO add linux & osx support
-        Process.Start(FilePath);
+        Process.Start("explorer.exe", Img.FilePath);
     }
 
     public void OpenPath()
     {
         // TODO add linux & osx support
-        Process.Start("explorer",  $"/select,\"{FilePath}\"");
+        Process.Start("explorer.exe",  $"/select,\"{Img.FilePath}\"");
     }
     
     #endregion
-
 }

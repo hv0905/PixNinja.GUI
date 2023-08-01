@@ -10,8 +10,8 @@ public class FileSizeValueConverter : IValueConverter
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
         if (value is int or uint or long or ulong)
-        { 
-            ulong len = (ulong)value;
+        {
+            ulong len = System.Convert.ToUInt64(value);
             return len switch
             {
               > 1024 * 1024 * 1024 => $"{(len / 1024.0 / 1024.0 / 1024.0):F2}G",

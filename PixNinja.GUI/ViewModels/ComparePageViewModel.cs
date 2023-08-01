@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using DynamicData;
 using PixNinja.GUI.Models;
@@ -65,6 +67,10 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
             --CurrentGroupId;
             PrepareContent();
         }, statusUpdateOb.Select(t => t.Item1 > 0));
+
+        this.WhenAnyValue(t => t.CurrentSelected)
+            .Where(t => t > 0 && t < ListContents.Count)
+            .Subscribe(_ => UpdateSimilarities());
     }
 
 
@@ -83,30 +89,63 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
         {
             // nothing to do
             _uiInteractiveService.Warning("Scan complete. No similarity images found.").ConfigureAwait(false);
+            _routeService.HostWindow.Router.Navigate.Execute(_routeService.HomePageViewModel);
+            return;
         }
 
         CurrentGroupId = 0;
         PrepareContent();
     }
 
-    public void PrepareContent()
+    public async void PrepareContent()
     {
         ListContents.Clear();
         var bestSize = CurrentGroup.MaxBy(t => t.FileSize)!;
         var bestRes = CurrentGroup.MaxBy(t => (long)t.Width * t.Height)!;
-
-
-        ListContents.AddRange(CurrentGroup.Select((t, i) =>
+        
+        var converted = await Task.WhenAll(CurrentGroup.Select(async (t, i) =>
         {
-            return new ImageCompareElementModel(t.FilePath, (ulong)new FileInfo(t.FilePath).Length,
-                $"{t.Width} x {t.Height}", t.Width * t.Height == bestRes.Width * bestRes.Height, t.FileSize == bestSize.FileSize);
+            
+            if (t.Sha1Hash == null)
+            {
+                using var sha1Comp = SHA1.Create();
+                await using var fs = File.OpenRead(t.FilePath);
+                t.Sha1Hash = await sha1Comp.ComputeHashAsync(fs);
+            }
+            return new ImageCompareElementModel(t, t.Width * t.Height == bestRes.Width * bestRes.Height, t.FileSize == bestSize.FileSize);
         }).ToList());
+        ListContents.AddRange(converted);
         
         UpdateSimilarities();
     }
 
     public void UpdateSimilarities()
     {
+        if (ListContents.Count == 0)
+        {
+            return;
+        }
+        if (CurrentSelected < 0 || CurrentSelected > ListContents.Count)
+        {
+            CurrentSelected = 0;
+        }
+
+        for (var i = 0; i < ListContents.Count; i++)
+        {
+            if (i == CurrentSelected)
+            {
+                ListContents[i].Similarity = -2;
+                continue;
+            }
+            if (Enumerable.SequenceEqual(ListContents[i].Img.Sha1Hash!, ListContents[CurrentSelected].Img.Sha1Hash!))
+            {
+                ListContents[i].Similarity = -1;
+                continue;
+            }
+
+            ListContents[i].Similarity =
+                (int)(ListContents[i].Img.ImageSimilarityRatio(ListContents[CurrentSelected].Img) * 100);
+        }
     }
 
     #endregion
