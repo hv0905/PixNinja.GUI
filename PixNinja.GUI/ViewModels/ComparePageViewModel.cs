@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DynamicData;
@@ -105,11 +103,9 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
         
         var converted = await Task.WhenAll(CurrentGroup.Select(async t =>
         {
-            if (t.Sha1Hash is null)
+            if (t.FileHash is null)
             {
-                using var sha1Comp = SHA1.Create();
-                await using var fs = File.OpenRead(t.FilePath);
-                t.Sha1Hash = await sha1Comp.ComputeHashAsync(fs);
+                await t.ComputeFileHash();
             }
             return new ImageCompareElementModel(t, t.Width * t.Height == bestRes.Width * bestRes.Height, t.FileSize == bestSize.FileSize);
         }).ToList());
@@ -136,7 +132,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
                 ListContents[i].Similarity = -2;
                 continue;
             }
-            if (ListContents[i].Img.Sha1Hash!.SequenceEqual(ListContents[CurrentSelected].Img.Sha1Hash!))
+            if (ListContents[i].Img.FileHash!.SequenceEqual(ListContents[CurrentSelected].Img.FileHash!))
             {
                 ListContents[i].Similarity = -1;
                 continue;
