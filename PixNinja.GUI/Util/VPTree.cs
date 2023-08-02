@@ -38,7 +38,7 @@ public sealed class VpTree<T>
 
     public List<(T, DistType)> Search(T target, int numberOfResults)
     {
-        List<HeapItem> closestHits = new List<HeapItem>();
+        var closestHits = new List<HeapItem>();
 
         // Reset tau to longest possible distance
         _tau = DistType.MaxValue;
@@ -50,9 +50,9 @@ public sealed class VpTree<T>
         List<(T, DistType)> returnResults = new();
 
         // We have to reverse the order since we want the nearest object to be first in the array
-        for (int i = numberOfResults - 1; i > -1; i--)
+        for (var i = numberOfResults - 1; i > -1; i--)
         {
-            returnResults.Add((this._items[closestHits[i].Index], closestHits[i].Dist));
+            returnResults.Add((_items[closestHits[i].Index], closestHits[i].Dist));
         }
 
         return returnResults;
@@ -69,10 +69,10 @@ public sealed class VpTree<T>
 
         public Node()
         {
-            this.Index = 0;
-            this.Threshold = 0;
-            this.Left = null;
-            this.Right = null;
+            Index = 0;
+            Threshold = 0;
+            Left = null;
+            Right = null;
         }
     }
 
@@ -83,8 +83,8 @@ public sealed class VpTree<T>
 
         public HeapItem(int index, DistType dist)
         {
-            this.Index = index;
-            this.Dist = dist;
+            Index = index;
+            Dist = dist;
         }
 
         public static bool operator <(HeapItem h1, HeapItem h2)
@@ -110,15 +110,15 @@ public sealed class VpTree<T>
 
         if (upperIndex - lowerIndex > 1)
         {
-            Swap(_items, lowerIndex, this._rand.Next(lowerIndex + 1, upperIndex));
+            Swap(_items, lowerIndex, _rand.Next(lowerIndex + 1, upperIndex));
 
-            int medianIndex = (upperIndex + lowerIndex) / 2;
+            var medianIndex = (upperIndex + lowerIndex) / 2;
 
             nth_element(_items, lowerIndex + 1, medianIndex, upperIndex - 1,
                 (i1, i2) => Comparer<DistType>.Default.Compare(
                     _calculateDistance(_items[lowerIndex], i1), _calculateDistance(_items[lowerIndex], i2)));
 
-            node.Threshold = this._calculateDistance(this._items[lowerIndex], this._items[medianIndex]);
+            node.Threshold = _calculateDistance(_items[lowerIndex], _items[medianIndex]);
 
             node.Left = BuildFromPoints(lowerIndex + 1, medianIndex);
             node.Right = BuildFromPoints(medianIndex, upperIndex);
@@ -134,10 +134,10 @@ public sealed class VpTree<T>
             return;
         }
 
-        DistType dist = this._calculateDistance(this._items[node.Index], target);
+        var dist = _calculateDistance(_items[node.Index], target);
 
         // We found entry with shorter distance
-        if (dist < this._tau)
+        if (dist < _tau)
         {
             if (closestHits.Count == numberOfResults)
             {
@@ -152,7 +152,7 @@ public sealed class VpTree<T>
             if (closestHits.Count == numberOfResults)
             {
                 closestHits.Sort((a, b) => Comparer<DistType>.Default.Compare(b.Dist, a.Dist));
-                this._tau = closestHits[0].Dist;
+                _tau = closestHits[0].Dist;
             }
         }
 
@@ -163,26 +163,26 @@ public sealed class VpTree<T>
 
         if (dist < node.Threshold)
         {
-            if (dist - this._tau <= node.Threshold)
+            if (dist - _tau <= node.Threshold)
             {
-                this.Search(node.Left, target, numberOfResults, closestHits);
+                Search(node.Left, target, numberOfResults, closestHits);
             }
 
-            if (dist + this._tau >= node.Threshold)
+            if (dist + _tau >= node.Threshold)
             {
-                this.Search(node.Right, target, numberOfResults, closestHits);
+                Search(node.Right, target, numberOfResults, closestHits);
             }
         }
         else
         {
-            if (dist + this._tau >= node.Threshold)
+            if (dist + _tau >= node.Threshold)
             {
-                this.Search(node.Right, target, numberOfResults, closestHits);
+                Search(node.Right, target, numberOfResults, closestHits);
             }
 
-            if (dist - this._tau <= node.Threshold)
+            if (dist - _tau <= node.Threshold)
             {
-                this.Search(node.Left, target, numberOfResults, closestHits);
+                Search(node.Left, target, numberOfResults, closestHits);
             }
         }
     }
@@ -194,7 +194,7 @@ public sealed class VpTree<T>
             return;
         }
 
-        DistType dist = this._calculateDistance(this._items[node.Index], target);
+        var dist = _calculateDistance(_items[node.Index], target);
 
         // We found entry with shorter distance
         if (dist < maxd)
@@ -212,24 +212,24 @@ public sealed class VpTree<T>
         {
             if (dist - maxd <= node.Threshold)
             {
-                this.SearchByMaxd(node.Left, target, maxd, closestHits);
+                SearchByMaxd(node.Left, target, maxd, closestHits);
             }
 
             if (dist + maxd >= node.Threshold)
             {
-                this.SearchByMaxd(node.Right, target, maxd, closestHits);
+                SearchByMaxd(node.Right, target, maxd, closestHits);
             }
         }
         else
         {
             if (dist + maxd >= node.Threshold)
             {
-                this.SearchByMaxd(node.Right, target, maxd, closestHits);
+                SearchByMaxd(node.Right, target, maxd, closestHits);
             }
 
             if (dist - maxd <= node.Threshold)
             {
-                this.SearchByMaxd(node.Left, target, maxd, closestHits);
+                SearchByMaxd(node.Left, target, maxd, closestHits);
             }
         }
     }

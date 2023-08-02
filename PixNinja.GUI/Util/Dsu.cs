@@ -4,7 +4,7 @@ namespace PixNinja.GUI.Util;
 
 public class Dsu
 {
-    private int[] _pa;
+    private readonly int[] _pa;
 
     public Dsu(int size)
     {

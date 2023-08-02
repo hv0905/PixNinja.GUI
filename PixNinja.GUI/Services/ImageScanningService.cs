@@ -41,11 +41,11 @@ public class ImageScanningService : ReactiveObject
     
     public string LastFileName { get; set; }
 
-    public void ScanAndAdd(ICollection<string> paths)
+    public void ScanAndAdd(IEnumerable<string> paths)
     {
         foreach (var path in paths)
         {
-            ImageFilePaths.AddRange(Directory.GetFiles(path, "*", new EnumerationOptions()
+            ImageFilePaths.AddRange(Directory.GetFiles(path, "*", new EnumerationOptions
                 {
                     IgnoreInaccessible = true,
                     RecurseSubdirectories = true
@@ -59,7 +59,7 @@ public class ImageScanningService : ReactiveObject
 
     public async Task ComputeHash()
     {
-        var tsk = Task.Run(() => Parallel.ForEach(ImageFilePaths, new ParallelOptions()
+        var tsk = Task.Run(() => Parallel.ForEach(ImageFilePaths, new ParallelOptions
         {
             MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount - 4, Environment.ProcessorCount / 2) // Use default settings will stuck the window
         }, t =>

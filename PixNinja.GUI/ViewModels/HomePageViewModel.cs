@@ -45,7 +45,7 @@ namespace PixNinja.GUI.ViewModels
 
             StartScan = ReactiveCommand.Create(() =>
             {
-                HostScreen.Router.Navigate.Execute(_routeService.ProgressPageViewModel).Subscribe(async t =>
+                HostScreen.Router.Navigate.Execute(_routeService.ProgressPageViewModel).Subscribe(async _ =>
                 {
                     _imageScanningService.ScanAndAdd(Paths);
                     await _imageScanningService.ComputeHash();
@@ -56,7 +56,10 @@ namespace PixNinja.GUI.ViewModels
             }, Paths.WhenAnyValue(t => t.Count, t => t != 0));
         }
 
+#pragma warning disable CS8618
+        [Obsolete("For design purpose only.")]
         public HomePageViewModel()
+#pragma warning restore CS8618
         {
         }
 
@@ -77,7 +80,7 @@ namespace PixNinja.GUI.ViewModels
             Paths.Remove((string)item);
         }
 
-        public string? UrlPathSegment => "home";
+        public string UrlPathSegment => "home";
         public IScreen HostScreen => _routeService.HostWindow;
     }
 }

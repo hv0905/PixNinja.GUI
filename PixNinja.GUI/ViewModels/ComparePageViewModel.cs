@@ -21,10 +21,10 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
     private readonly UIInteractiveService _uiInteractiveService;
     private readonly ObservableAsPropertyHelper<string> _statusbarText;
 
-    private int _currentGroupId = 0;
-    private int _currentSelected = 0;
+    private int _currentGroupId;
+    private int _currentSelected;
 
-    public string? UrlPathSegment => "compare";
+    public string UrlPathSegment => "compare";
     public IScreen HostScreen => _routeService.HostWindow;
 
     public int CurrentGroupId
@@ -103,10 +103,9 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
         var bestSize = CurrentGroup.MaxBy(t => t.FileSize)!;
         var bestRes = CurrentGroup.MaxBy(t => (long)t.Width * t.Height)!;
         
-        var converted = await Task.WhenAll(CurrentGroup.Select(async (t, i) =>
+        var converted = await Task.WhenAll(CurrentGroup.Select(async t =>
         {
-            
-            if (t.Sha1Hash == null)
+            if (t.Sha1Hash is null)
             {
                 using var sha1Comp = SHA1.Create();
                 await using var fs = File.OpenRead(t.FilePath);
@@ -137,7 +136,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
                 ListContents[i].Similarity = -2;
                 continue;
             }
-            if (Enumerable.SequenceEqual(ListContents[i].Img.Sha1Hash!, ListContents[CurrentSelected].Img.Sha1Hash!))
+            if (ListContents[i].Img.Sha1Hash!.SequenceEqual(ListContents[CurrentSelected].Img.Sha1Hash!))
             {
                 ListContents[i].Similarity = -1;
                 continue;

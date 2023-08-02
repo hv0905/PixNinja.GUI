@@ -18,7 +18,7 @@ public class ImageCompareElementModel : ReactiveObject
 
     private bool _shouldRemove;
     private int _similarity;
-    private ObservableAsPropertyHelper<string> _similarityText;
+    private readonly ObservableAsPropertyHelper<string> _similarityText;
 
     public bool ShouldRemove
     {

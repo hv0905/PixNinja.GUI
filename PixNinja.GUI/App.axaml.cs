@@ -7,38 +7,34 @@ using PixNinja.GUI.Services;
 using PixNinja.GUI.ViewModels;
 using PixNinja.GUI.Views;
 
-namespace PixNinja.GUI
+namespace PixNinja.GUI;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    public override void Initialize()
     {
-        public override void Initialize()
+        AvaloniaXamlLoader.Load(this);
+    }
+
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            AvaloniaXamlLoader.Load(this);
+            desktop.MainWindow = new MainWindow
+            {
+                DataContext = new MainWindowViewModel(new ImageScanningService())
+            };
         }
 
-        public override void OnFrameworkInitializationCompleted()
-        {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = new MainWindowViewModel(new ImageScanningService()),
-                };
-            }
+        base.OnFrameworkInitializationCompleted();
+    }
 
-            base.OnFrameworkInitializationCompleted();
-        }
-
-        public static Window GetCurrentMainWindow()
+    public static Window GetCurrentMainWindow()
+    {
+        if (Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (Current!.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                return desktop.MainWindow!;
-            }
-            else
-            {
-                throw new NotSupportedException();
-            }
+            return desktop.MainWindow!;
         }
+        throw new NotSupportedException();
     }
 }
