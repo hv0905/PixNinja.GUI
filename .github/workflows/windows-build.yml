@@ -36,9 +36,12 @@ jobs:
       env:
         Configuration: Release
 
+    - name: Zip the release artifact
+      run: mkdir dist && Compress-Archive -Path ./PixNinja.GUI/bin/Release/net6.0/win-x64/publish/ -Destination ./dist/windows-release.zip
+
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v3
       with:
         name: Windows Release
-        path: ./PixNinja.GUI/bin/Release/net6.0/win-x64/publish/
+        path: ./dist/windows-release.zip
