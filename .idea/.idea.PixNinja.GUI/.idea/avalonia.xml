@@ -6,6 +6,7 @@
         <entry key="PixNinja.GUI/App.axaml" value="PixNinja.GUI/PixNinja.GUI.csproj" />
         <entry key="PixNinja.GUI/Styles/Star.axaml" value="PixNinja.GUI/PixNinja.GUI.csproj" />
         <entry key="PixNinja.GUI/Views/ComparePage.axaml" value="PixNinja.GUI/PixNinja.GUI.csproj" />
+        <entry key="PixNinja.GUI/Views/CompletePage.axaml" value="PixNinja.GUI/PixNinja.GUI.csproj" />
         <entry key="PixNinja.GUI/Views/HomePage.axaml" value="PixNinja.GUI/PixNinja.GUI.csproj" />
         <entry key="PixNinja.GUI/Views/MainWindow.axaml" value="PixNinja.GUI/PixNinja.GUI.csproj" />
         <entry key="PixNinja.GUI/Views/ProgressPage.axaml" value="PixNinja.GUI/PixNinja.GUI.csproj" />

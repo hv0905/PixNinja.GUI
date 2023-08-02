@@ -79,6 +79,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
 
     public void Complete()
     {
+        _routeService.HostWindow.Router.Navigate.Execute(_routeService.CompletePageViewModel!);
     }
 
     public void Init()
@@ -87,7 +88,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
         {
             // nothing to do
             _uiInteractiveService.Warning("Scan complete. No similarity images found.").ConfigureAwait(false);
-            _routeService.HostWindow.Router.Navigate.Execute(_routeService.HomePageViewModel);
+            _routeService.HostWindow.Router.Navigate.Execute(_routeService.HomePageViewModel!);
             return;
         }
 

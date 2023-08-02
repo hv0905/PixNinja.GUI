@@ -39,7 +39,7 @@ public class ImageScanningService : ReactiveObject
         set => this.RaiseAndSetIfChanged(ref _imgGroups, value);
     }
     
-    public string LastFileName { get; set; }
+    public string? LastFileName { get; set; }
 
     public void ScanAndAdd(IEnumerable<string> paths)
     {

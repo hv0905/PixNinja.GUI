@@ -13,6 +13,7 @@ public class HomeViewLocator : IViewLocator
             HomePageViewModel context => new HomePage { ViewModel = context},
             ProgressPageViewModel context => new ProgressPage {ViewModel = context},
             ComparePageViewModel context => new ComparePage {ViewModel = context},
+            CompletePageViewModel context => new CompletePage {ViewModel = context},
             _ => throw new ArgumentOutOfRangeException(nameof(viewModel), viewModel, null)
         };
 }

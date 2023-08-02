@@ -11,6 +11,8 @@ public class RouteService : ReactiveObject
     
     public ComparePageViewModel? ComparePageViewModel { get; set; }
 
+    public CompletePageViewModel? CompletePageViewModel { get; set; }
+
     public RouteService(IScreen hostWindow)
     {
         HostWindow = hostWindow;

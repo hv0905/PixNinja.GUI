@@ -19,6 +19,7 @@ public class MainWindowViewModel : ViewModelBase, IScreen
         RouteService.ProgressPageViewModel = new(_imageScanningService, RouteService);
         RouteService.HomePageViewModel = new(RouteService, UiInteractiveService, _imageScanningService);
         RouteService.ComparePageViewModel = new(_imageScanningService, RouteService, UiInteractiveService);
+        RouteService.CompletePageViewModel = new(RouteService, _imageScanningService);
         Router.Navigate.Execute(RouteService.HomePageViewModel);
     }
 }

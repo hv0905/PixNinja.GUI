@@ -45,12 +45,12 @@ namespace PixNinja.GUI.ViewModels
 
             StartScan = ReactiveCommand.Create(() =>
             {
-                HostScreen.Router.Navigate.Execute(_routeService.ProgressPageViewModel).Subscribe(async _ =>
+                HostScreen.Router.Navigate.Execute(_routeService.ProgressPageViewModel!).Subscribe(async _ =>
                 {
                     _imageScanningService.ScanAndAdd(Paths);
                     await _imageScanningService.ComputeHash();
-                    _routeService.ComparePageViewModel.Init();
-                    HostScreen.Router.Navigate.Execute(_routeService.ComparePageViewModel).Subscribe();
+                    _routeService.ComparePageViewModel!.Init();
+                    HostScreen.Router.Navigate.Execute(_routeService.ComparePageViewModel!).Subscribe();
                 });
                 
             }, Paths.WhenAnyValue(t => t.Count, t => t != 0));
