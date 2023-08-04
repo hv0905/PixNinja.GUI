@@ -3,14 +3,76 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:PixNinja.GUI.ViewModels"
+             xmlns:i="https://github.com/projektanker/icons.avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="PixNinja.GUI.Views.CompletePage">
     <Design.DataContext>
-        <vm:CompletePageViewModel/>
+        <vm:CompletePageViewModel />
     </Design.DataContext>
     <UserControl.Styles>
-        
+        <StyleInclude Source="/Styles/Star.axaml"></StyleInclude>
     </UserControl.Styles>
-    Ciallo~
-    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="/Styles/ColorPattles.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer>
+        <StackPanel>
+            <Border Classes="card">
+                <Grid ColumnDefinitions="Auto, *" RowDefinitions="*, Auto">
+                    <i:Icon Grid.RowSpan="2" Value="fa-trash" Height="120" Width="120" FontSize="80"
+                            Foreground="{StaticResource BrushDanger}" />
+                    <StackPanel Grid.Row="0" Grid.Column="1">
+                        <TextBlock Classes="xxl" Text="Purge" Foreground="{StaticResource BrushDanger}" />
+                        <TextBlock TextWrapping="Wrap">
+                            Delete all the images you've marked for removal to reclaim the disk space.
+                            <LineBreak />
+                            <Bold>WARNING: All the file you marked will be PERMANENTLY deleted. This operation cannot be undone.</Bold>
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="This will delete 999 images, " />
+                            <TextBlock Text="reclaim up to 999M of disk space." />
+                        </StackPanel>
+                    </StackPanel>
+                    <DockPanel Grid.Column="1" Grid.Row="1">
+                        <Button Classes="tool" Content="Purge" Background="{StaticResource BrushDanger}"
+                                DockPanel.Dock="Right" IsEnabled="{CompiledBinding #check_PurgeConfirm.IsChecked}" />
+                        <CheckBox x:Name="check_PurgeConfirm"
+                                  Content="Yes, I confirm that I wish to delete all the images I have marked."
+                                  DockPanel.Dock="Left" />
+                    </DockPanel>
+                </Grid>
+            </Border>
+            <Border Classes="card">
+                <Grid ColumnDefinitions="Auto, *" RowDefinitions="*, Auto">
+                    <i:Icon Grid.RowSpan="2" Value="fa-arrow-right-from-bracket" Height="120" Width="120" FontSize="80" />
+                    <StackPanel Grid.Row="0" Grid.Column="1">
+                        <TextBlock Classes="xxl" Text="Move File" />
+                        <TextBlock TextWrapping="Wrap">
+                            Move all the files you have marked for removal to a directory of your choice. You can then delete or archive them as needed.
+                        </TextBlock>
+                    </StackPanel>
+                    <Button Grid.Column="1" Grid.Row="1" Classes="tool" Content="Move" HorizontalAlignment="Right" />
+                </Grid>
+            </Border>
+            <Border Classes="card">
+                <Grid ColumnDefinitions="Auto, *" RowDefinitions="*, Auto">
+                    <i:Icon Grid.RowSpan="2" Value="fa-arrow-up-right-from-square" Height="120" Width="120"
+                            FontSize="80" />
+                    <StackPanel Grid.Row="0" Grid.Column="1">
+                        <TextBlock Classes="xxl" Text="Export list" />
+                        <TextBlock TextWrapping="Wrap">
+                            Write the paths of all the image files you have marked for removal to either a plain text file or a JSON array. Afterward, you can utilize your own script to manage these files.
+                        </TextBlock>
+                    </StackPanel>
+                    <Button Grid.Column="1" Grid.Row="1" Classes="tool" Content="Export" HorizontalAlignment="Right" />
+                </Grid>
+            </Border>
+        </StackPanel>
+
+    </ScrollViewer>
+
 </UserControl>

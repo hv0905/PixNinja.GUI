@@ -66,14 +66,6 @@ public sealed class VpTree<T>
         public DistType Threshold;
         public Node? Left;
         public Node? Right;
-
-        public Node()
-        {
-            Index = 0;
-            Threshold = 0;
-            Left = null;
-            Right = null;
-        }
     }
 
     private sealed class HeapItem

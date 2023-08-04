@@ -11,11 +11,7 @@
         <local:ComparePageViewModel />
     </Design.DataContext>
     <UserControl.Styles>
-        <Style Selector="Button.tool">
-            <Setter Property="MinWidth" Value="100" />
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
-            <Setter Property="Margin" Value="4"></Setter>
-        </Style>
+        <StyleInclude Source="/Styles/Star.axaml"></StyleInclude>
     </UserControl.Styles>
     <UserControl.Resources>
         <uiutil:FileSizeValueConverter x:Key="FileSizeValueConverter"></uiutil:FileSizeValueConverter>
