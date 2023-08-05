@@ -16,7 +16,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
 {
     private readonly ImageScanningService _imageScanningService;
     private readonly RouteService _routeService;
-    private readonly UIInteractiveService _uiInteractiveService;
+    private readonly UiInteractiveService _uiInteractiveService;
     private readonly ObservableAsPropertyHelper<string> _statusbarText;
 
     private int _currentGroupId;
@@ -44,7 +44,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
     }
 
     public ComparePageViewModel(ImageScanningService imageScanningService, RouteService routeService,
-        UIInteractiveService uiInteractiveService)
+        UiInteractiveService uiInteractiveService)
     {
         _imageScanningService = imageScanningService;
         _routeService = routeService;

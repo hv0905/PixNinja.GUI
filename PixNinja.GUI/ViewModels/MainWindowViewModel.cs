@@ -1,4 +1,5 @@
-﻿using PixNinja.GUI.Services;
+﻿using System;
+using PixNinja.GUI.Services;
 using ReactiveUI;
 
 namespace PixNinja.GUI.ViewModels;
@@ -10,7 +11,7 @@ public class MainWindowViewModel : ViewModelBase, IScreen
 
     public RoutingState Router { get; } = new();
 
-    public UIInteractiveService UiInteractiveService { get; } = new();
+    public UiInteractiveService UiInteractiveService { get; } = new();
     
     public MainWindowViewModel(ImageScanningService imageScanningService)
     {
@@ -22,4 +23,11 @@ public class MainWindowViewModel : ViewModelBase, IScreen
         RouteService.CompletePageViewModel = new(RouteService, _imageScanningService);
         Router.Navigate.Execute(RouteService.HomePageViewModel);
     }
+
+    #region Design
+    [Obsolete("For design purpose only.")]
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    public MainWindowViewModel() { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    #endregion
 }

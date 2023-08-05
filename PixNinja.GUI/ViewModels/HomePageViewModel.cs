@@ -11,11 +11,11 @@ namespace PixNinja.GUI.ViewModels
     public class HomePageViewModel : ViewModelBase, IRoutableViewModel
     {
         private readonly RouteService _routeService;
-        private readonly UIInteractiveService _uiInteractiveService;
+        private readonly UiInteractiveService _uiInteractiveService;
         private readonly ImageScanningService _imageScanningService;
         private string _inputPath = "";
 
-        public HomePageViewModel(RouteService routeService, UIInteractiveService uiInteractiveService,
+        public HomePageViewModel(RouteService routeService, UiInteractiveService uiInteractiveService,
             ImageScanningService imageScanningService)
         {
             _routeService = routeService;

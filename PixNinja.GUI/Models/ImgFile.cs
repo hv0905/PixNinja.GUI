@@ -5,7 +5,7 @@ using PixNinja.GUI.Util;
 
 namespace PixNinja.GUI.Models;
 
-public record class ImgFile(string FilePath, int Width, int Height, ulong Hash, long FileSize)
+public record ImgFile(string FilePath, int Width, int Height, ulong Hash, long FileSize)
 {
     public int Id { get; set; } = -1;
     // The difference bit of the image hash
