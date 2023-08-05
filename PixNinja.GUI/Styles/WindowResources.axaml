@@ -1,0 +1,17 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <Color x:Key="WindowBackgroundTint">White</Color>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <Color x:Key="WindowBackgroundTint">Black</Color>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+    <ExperimentalAcrylicMaterial
+        x:Key="WindowAcrylicMaterial"
+        BackgroundSource="Digger"
+        TintColor="{DynamicResource WindowBackgroundTint}"
+        TintOpacity="1"
+        MaterialOpacity="0.65" />
+</ResourceDictionary>

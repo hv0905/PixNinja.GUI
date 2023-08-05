@@ -25,7 +25,7 @@ public class ProgressPageViewModel : ViewModelBase, IRoutableViewModel
 
 
         _status = statusUpdateOb
-            .Select(t =>
+            .Select(t => t == _imageScanningService.ImageFilePaths.Count ? "Indexing results..." :
                 $"({t} / {_imageScanningService.ImageFilePaths.Count}) Calculating {_imageScanningService.LastFileName ?? string.Empty}...")
             .ToProperty(this, t => t.Status);
 

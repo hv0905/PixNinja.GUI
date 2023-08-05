@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Input;
 using PixNinja.GUI.Services;
+using PixNinja.GUI.Views;
 using ReactiveUI;
 
 namespace PixNinja.GUI.ViewModels
@@ -78,6 +79,11 @@ namespace PixNinja.GUI.ViewModels
         public void Remove(object item)
         {
             Paths.Remove((string)item);
+        }
+
+        public void GoAbout()
+        {
+            new AboutWindow().Show();
         }
 
         public string UrlPathSegment => "home";

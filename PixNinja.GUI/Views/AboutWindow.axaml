@@ -1,0 +1,35 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="500" Width="400" Height="500" CanResize="False" x:Name="self"
+        x:Class="PixNinja.GUI.Views.AboutWindow"
+        TransparencyLevelHint="AcrylicBlur"
+        ExtendClientAreaToDecorationsHint="True"
+        Background="Transparent"
+        Title="About PixNinja.GUI">
+        <Window.Resources>
+                <ResourceDictionary>
+                        <ResourceDictionary.MergedDictionaries>
+                                <ResourceInclude Source="/Styles/WindowResources.axaml"/>
+                        </ResourceDictionary.MergedDictionaries>
+                </ResourceDictionary>
+        </Window.Resources>
+        <Window.Styles>
+                <StyleInclude Source="/Styles/Star.axaml"/>
+        </Window.Styles>
+        
+        <Panel>
+                <ExperimentalAcrylicBorder IsHitTestVisible="False" Material="{DynamicResource WindowAcrylicMaterial}"/>
+                <Grid RowDefinitions="*, Auto" Margin="16 48 16 16">
+                        <StackPanel>
+                                <TextBlock Classes="xxl" Text="PixNinja.GUI"/>
+                                <TextBlock Classes="m" Text="Version: 1.0"/>
+                                <TextBlock TextWrapping="Wrap" Classes="s" Text="Loren ipsum dolor sit amet Loren ipsum dolor sit ametLoren ipsum dolor sit ametLoren ipsum dolor sit ametLoren ipsum dolor sit ametLoren ipsum dolor sit ametLoren ipsum dolor sit ametLoren ipsum dolor sit amet"/>
+                        </StackPanel>
+                        <Button Grid.Row="1" Content="OK" Classes="tool" HorizontalAlignment="Right" Command="{Binding Close, ElementName=self}"/>
+                </Grid>
+                
+                
+        </Panel>
+</Window>

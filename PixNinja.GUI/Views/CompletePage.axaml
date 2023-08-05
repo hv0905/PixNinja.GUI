@@ -10,7 +10,7 @@
         <vm:CompletePageViewModel />
     </Design.DataContext>
     <UserControl.Styles>
-        <StyleInclude Source="/Styles/Star.axaml"></StyleInclude>
+        <StyleInclude Source="/Styles/Star.axaml"/>
     </UserControl.Styles>
     <UserControl.Resources>
         <ResourceDictionary>

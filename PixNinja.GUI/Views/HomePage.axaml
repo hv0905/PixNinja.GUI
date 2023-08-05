@@ -7,23 +7,37 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:Name="Root"
              x:Class="PixNinja.GUI.Views.HomePage">
     <UserControl.Styles>
-        <StyleInclude Source="../Styles/Star.axaml"></StyleInclude>
+        <StyleInclude Source="../Styles/Star.axaml"/>
     </UserControl.Styles>
     <Design.DataContext>
         <vm:HomePageViewModel/>
     </Design.DataContext>
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RowDefinitions="Auto,*,Auto">
-        <StackPanel>
-            <TextBlock FontSize="25" Text="PixNinja"></TextBlock>
-            <Panel Height="16"></Panel>
-            <TextBlock Text="Directory"/>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" RowDefinitions="Auto, Auto,*,Auto">
+        <DockPanel>
+            <DropDownButton Classes="tool" DockPanel.Dock="Right">
+                <StackPanel>
+                    <i:Icon Value="fa-cogs"/>
+                    <TextBlock Text="Settings"/>
+                </StackPanel>
+                <DropDownButton.Flyout>
+                    <MenuFlyout>
+                        <MenuItem Header="App Preference" i:MenuItem.Icon="fa-cog"/>
+                        <MenuItem Header="About PixNinja.GUI" i:MenuItem.Icon="fa-circle-info" Command="{Binding GoAbout}"/>
+                    </MenuFlyout>
+                </DropDownButton.Flyout>
+            </DropDownButton>
+            <TextBlock FontSize="25" Text="PixNinja" Margin="16" DockPanel.Dock="Left"/>
+            
+        </DockPanel>
+        <StackPanel Grid.Row="1">
+            <TextBlock Text="Directory" Margin="4"/>
             <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
                 <Button Classes="tool" Content="Add" DockPanel.Dock="Right" Command="{Binding AddPath}"/>
                 <Button Classes="tool" Content="Browse..." DockPanel.Dock="Right" Click="Button_OnClick"/>
                 <TextBox HorizontalAlignment="Stretch" Watermark="Input your path..." Text="{CompiledBinding InputPath}"/>
             </DockPanel>
         </StackPanel>
-        <ListBox Grid.Row="1" Margin="16" ItemsSource="{CompiledBinding Paths}">
+        <ListBox Grid.Row="2" Margin="16" ItemsSource="{CompiledBinding Paths}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <DockPanel HorizontalAlignment="Stretch" LastChildFill="True">
@@ -33,6 +47,6 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Button Classes="tool" Grid.Row="2" Content="Start Scanning..." HorizontalAlignment="Stretch" Command="{Binding StartScan}"/>
+        <Button Classes="tool" Grid.Row="3" Content="Start Scanning..." HorizontalAlignment="Stretch" Command="{Binding StartScan}"/>
     </Grid>
 </UserControl>

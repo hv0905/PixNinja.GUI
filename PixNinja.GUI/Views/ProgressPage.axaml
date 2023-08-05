@@ -10,11 +10,11 @@
         <vm:ProgressPageViewModel/>
     </Design.DataContext>
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
-        <i:Icon Value="fa-solid fa-rocket" Height="100" Width="100" FontSize="100"></i:Icon>
+        <i:Icon Value="fa-solid fa-rocket" Height="100" Width="100" FontSize="100"/>
         <TextBlock HorizontalAlignment="Center" FontSize="50" FontWeight="Light">Scanning...</TextBlock>
         <TextBlock HorizontalAlignment="Center">This might take a while...</TextBlock>
-        <ProgressBar Margin="16" Maximum="100" Value="{CompiledBinding Progress}"></ProgressBar>
-        <TextBlock Text="{CompiledBinding Status}"></TextBlock>
+        <ProgressBar Margin="16" Maximum="100" Value="{CompiledBinding Progress}"/>
+        <TextBlock Text="{CompiledBinding Status}"/>
     </StackPanel>
     
 </UserControl>

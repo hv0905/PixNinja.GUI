@@ -11,10 +11,10 @@
         <local:ComparePageViewModel />
     </Design.DataContext>
     <UserControl.Styles>
-        <StyleInclude Source="/Styles/Star.axaml"></StyleInclude>
+        <StyleInclude Source="/Styles/Star.axaml"/>
     </UserControl.Styles>
     <UserControl.Resources>
-        <uiutil:FileSizeValueConverter x:Key="FileSizeValueConverter"></uiutil:FileSizeValueConverter>
+        <uiutil:FileSizeValueConverter x:Key="FileSizeValueConverter"/>
     </UserControl.Resources>
     <Grid RowDefinitions="*,Auto">
         <ListBox Margin="8" SelectedIndex="{CompiledBinding CurrentSelected}" ItemsSource="{CompiledBinding ListContents}">
@@ -56,7 +56,7 @@
                             </StackPanel>
                             <DockPanel HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" LastChildFill="True">
                                 <SplitButton Classes="tool" DockPanel.Dock="Right" Command="{Binding OpenExternal}">
-                                    <StackPanel Orientation="Horizontal">
+                                    <StackPanel>
                                         <i:Icon Value="fa-solid fa-up-right-from-square" />
                                         <TextBlock Text="Open" />
                                     </StackPanel>
@@ -72,14 +72,14 @@
                                         HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="16 4 16 4">
                                     <Border.Styles>
                                         <Style Selector="Border.Selected">
-                                            <Setter Property="Background" Value="#e74c3c"></Setter>
+                                            <Setter Property="Background" Value="#e74c3c"/>
                                         </Style>
                                         <Style Selector="Border.Selected TextBlock">
-                                            <Setter Property="Foreground" Value="White"></Setter>
+                                            <Setter Property="Foreground" Value="White"/>
                                         </Style>
                                     </Border.Styles>
                                     <CheckBox x:Name="_checkRemoval" Margin="2 0 2 0 " HorizontalAlignment="Stretch">
-                                        <TextBlock Text="Mark for removal"></TextBlock>
+                                        <TextBlock Text="Mark for removal"/>
                                     </CheckBox>
                                 </Border>
                             </DockPanel>
@@ -89,7 +89,7 @@
             </ListBox>
         <DockPanel Grid.Row="1" LastChildFill="True">
             <Button Classes="tool" DockPanel.Dock="Left" Command="{Binding Previous}">
-                <StackPanel Orientation="Horizontal">
+                <StackPanel>
                     <i:Icon Value="fa-solid fa-arrow-left" />
                     <TextBlock>Previous Group</TextBlock>
                 </StackPanel>
@@ -97,18 +97,18 @@
             <DropDownButton Content="Options">
                 <DropDownButton.Flyout>
                     <MenuFlyout>
-                        <MenuItem i:MenuItem.Icon="fa-file-export" Header="Export Raw Data As Json"></MenuItem>
+                        <MenuItem i:MenuItem.Icon="fa-file-export" Header="Export Raw Data As Json"/>
                     </MenuFlyout>
                 </DropDownButton.Flyout>
             </DropDownButton>
             <Button Classes="tool" DockPanel.Dock="Right" Command="{Binding Complete}">
-                <StackPanel Orientation="Horizontal">
+                <StackPanel>
                     <i:Icon Value="fa-solid fa-forward-step" />
                     <TextBlock>Complete</TextBlock>
                 </StackPanel>
             </Button>
             <Button Classes="tool" DockPanel.Dock="Right" Command="{Binding Next}">
-                <StackPanel Orientation="Horizontal">
+                <StackPanel>
                     <i:Icon Value="fa-solid fa-arrow-right" />
                     <TextBlock>Next Group</TextBlock>
                 </StackPanel>
