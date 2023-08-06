@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 namespace PixNinja.GUI.Util;
@@ -16,7 +17,7 @@ public sealed class VpTree<T>
     private Node? _root;
     private Random _rand; // Used in BuildFromPoints
     private CalculateDistance<T> _calculateDistance;
-    
+
     public VpTree(T[] items, CalculateDistance<T> distanceCalculator)
     {
         _rand = new Random(); // Used in BuildFromPoints
@@ -58,7 +59,6 @@ public sealed class VpTree<T>
 
         return returnResults;
     }
-
 
 
     private sealed class Node // This cannot be struct because Node referring to Node causes error CS0523
@@ -179,7 +179,7 @@ public sealed class VpTree<T>
             }
         }
     }
-    
+
     private void SearchByMaxd(Node? node, T target, int maxd, List<HeapItem> closestHits)
     {
         if (node == null)
@@ -201,29 +201,14 @@ public sealed class VpTree<T>
             return;
         }
 
-        if (dist < node.Threshold)
+        if (dist - maxd <= node.Threshold)
         {
-            if (dist - maxd <= node.Threshold)
-            {
-                SearchByMaxd(node.Left, target, maxd, closestHits);
-            }
-
-            if (dist + maxd >= node.Threshold)
-            {
-                SearchByMaxd(node.Right, target, maxd, closestHits);
-            }
+            SearchByMaxd(node.Left, target, maxd, closestHits);
         }
-        else
-        {
-            if (dist + maxd >= node.Threshold)
-            {
-                SearchByMaxd(node.Right, target, maxd, closestHits);
-            }
 
-            if (dist - maxd <= node.Threshold)
-            {
-                SearchByMaxd(node.Left, target, maxd, closestHits);
-            }
+        if (dist + maxd >= node.Threshold)
+        {
+            SearchByMaxd(node.Right, target, maxd, closestHits);
         }
     }
 
@@ -270,7 +255,7 @@ public sealed class VpTree<T>
             {
                 to = r;
             }
-            else 
+            else
             {
                 from = r + 1;
             }
