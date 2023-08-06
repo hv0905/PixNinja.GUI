@@ -21,7 +21,6 @@ public static class BitComparer
         {
             count += BIT_COUNTS[num & 0xff];
         }
-
         return count;
     }
 }

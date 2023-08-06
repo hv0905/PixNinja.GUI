@@ -17,10 +17,10 @@
         <uiutil:FileSizeValueConverter x:Key="FileSizeValueConverter"/>
     </UserControl.Resources>
     <Grid RowDefinitions="*,Auto">
-        <ListBox Margin="8" SelectedIndex="{CompiledBinding CurrentSelected}" ItemsSource="{CompiledBinding ListContents}">
+        <ListBox SelectedIndex="{CompiledBinding CurrentSelected}" ItemsSource="{CompiledBinding ListContents}" AutoScrollToSelectedItem="True">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid ColumnDefinitions="*,*" RowDefinitions="*,Auto">
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="*,Auto" MaxHeight="400" MinHeight="100">
                             <Grid.Styles>
                                 <Style Selector="TextBlock.MinorInfo">
                                     <Setter Property="VerticalAlignment" Value="Center" />
@@ -52,7 +52,6 @@
                                 </StackPanel>
                                 <TextBlock Text="Full Path:" />
                                 <TextBlock Text="{CompiledBinding Img.FilePath}" />
-
                             </StackPanel>
                             <DockPanel HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" LastChildFill="True">
                                 <SplitButton Classes="tool" DockPanel.Dock="Right" Command="{Binding OpenExternal}">

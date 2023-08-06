@@ -10,9 +10,4 @@ public partial class CompletePage : ReactiveUserControl<CompletePageViewModel>
     {
         InitializeComponent();
     }
-
-    private void InitializeComponent()
-    {
-        AvaloniaXamlLoader.Load(this);
-    }
 }

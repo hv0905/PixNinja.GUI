@@ -9,7 +9,7 @@ using PixNinja.GUI.Views;
 
 namespace PixNinja.GUI;
 
-public partial class App : Application
+public class App : Application
 {
     public override void Initialize()
     {
