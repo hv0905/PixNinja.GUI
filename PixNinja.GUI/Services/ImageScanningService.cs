@@ -18,9 +18,9 @@ public class ImageScanningService : ReactiveObject
 {
     public List<string> ImageFilePaths { get; private set; } = new();
     public List<ImgFile> ImgFiles { get; } = new();
-    public IImageHash HashAlgo = new DifferenceHash();
+    public IImageHash HashAlgo = new PerceptualHash();
     public int Similarity { get; set; } = 2;
-    
+
     private int _completedCount;
     private int _completedCountSync;
     private VpTree<ImgFile>? _imgTree;
@@ -38,7 +38,7 @@ public class ImageScanningService : ReactiveObject
         get => _imgGroups;
         set => this.RaiseAndSetIfChanged(ref _imgGroups, value);
     }
-    
+
     public string? LastFileName { get; set; }
 
     public void ScanAndAdd(IEnumerable<string> paths)
@@ -61,7 +61,9 @@ public class ImageScanningService : ReactiveObject
     {
         var tsk = Task.Run(() => Parallel.ForEach(ImageFilePaths, new ParallelOptions
         {
-            MaxDegreeOfParallelism = Math.Max(Environment.ProcessorCount - 4, Environment.ProcessorCount / 2) // Use default settings will stuck the window
+            MaxDegreeOfParallelism =
+                Math.Max(Environment.ProcessorCount - 4,
+                    Environment.ProcessorCount / 2) // Use default settings will stuck the window
         }, t =>
         {
             Debug.WriteLine($"Calculating {t}");
@@ -76,7 +78,7 @@ public class ImageScanningService : ReactiveObject
                     ImgFiles.Add(new ImgFile(t, width, height, hash, new FileInfo(t).Length));
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.WriteLine("..." + e.Message);
             }
@@ -90,17 +92,17 @@ public class ImageScanningService : ReactiveObject
         while (!tsk.IsCompleted)
         {
             await Task.Delay(200);
-            lock(_lockHackCal)
+            lock (_lockHackCal)
             {
                 CompletedCountSync = _completedCount;
                 LastFileName = ImgFiles.LastOrDefault()?.FilePath ?? string.Empty;
             }
-            
         }
+
         CompletedCountSync = _completedCount;
 
         for (var i = 0; i < ImgFiles.Count; i++) ImgFiles[i].Id = i;
-        
+
         // Summarize groups
         var result = await Task.Run(SummarizeGroupsFromTree);
         ImgGroups = result;
@@ -110,11 +112,11 @@ public class ImageScanningService : ReactiveObject
     {
         // Building Data Hashes
         _imgTree = new VpTree<ImgFile>(ImgFiles.ToArray(), (x, y) => (int)x.ImageDiff(y));
-        
+
         Dsu dsu = new(ImgFiles.Count);
         foreach (var item in ImgFiles)
         {
-            var result = _imgTree!.SearchByMaxDist(item, Similarity);
+            var result = _imgTree.SearchByMaxDist(item, Similarity);
             result.ForEach(t => dsu.Union(item.Id, t.Item1.Id));
         }
 
@@ -122,6 +124,9 @@ public class ImageScanningService : ReactiveObject
         foreach (var item in ImgFiles)
         {
             var g = dsu.Find(item.Id);
+            // If the root is the item itself, don't add it to the dict for now.
+            // This can reduce the number of List<> needs to be created.
+            if (g == item.Id) continue;
             if (groupsDict.TryGetValue(g, out var value))
             {
                 value.Add(item);
@@ -131,14 +136,13 @@ public class ImageScanningService : ReactiveObject
                 groupsDict.Add(g, new List<ImgFile> { item });
             }
         }
-        
-        var resultGroups = new List<List<ImgFile>>();
-        foreach (var (_, value) in groupsDict)
+
+        List<List<ImgFile>> resultGroups = new();
+        foreach (var (id, value) in groupsDict)
         {
-            if (value.Count > 1)
-            {
-                resultGroups.Add(value);
-            }
+            // Add the root element to the list since we've ignored it just now.
+            value.Add(ImgFiles[id]);
+            resultGroups.Add(value);
         }
 
         return resultGroups;
