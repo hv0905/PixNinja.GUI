@@ -67,7 +67,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
         }, statusUpdateOb.Select(t => t.Item1 > 0));
 
         this.WhenAnyValue(t => t.CurrentSelected)
-            .Where(t => t > 0 && t < ListContents.Count)
+            .Where(t => t >= 0 && t < ListContents.Count)
             .Subscribe(_ => UpdateSimilarities());
     }
 
