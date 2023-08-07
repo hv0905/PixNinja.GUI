@@ -6,6 +6,8 @@ A handy utility for scanning and analyzing all duplicate images on your system u
 
 **Warning: This project is still a work in progress (WIP), and most of the features may not work properly.**
 
+[PixNinja.GUI实现原理介绍(中文)](https://edgeneko.aiursoft.com/2023/08/06/ImageHashUsage/)
+
 ![screenshot](web/screenshot.png)
 
 ## Develop
