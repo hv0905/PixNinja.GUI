@@ -11,81 +11,93 @@
         <local:ComparePageViewModel />
     </Design.DataContext>
     <UserControl.Styles>
-        <StyleInclude Source="/Styles/Star.axaml"/>
+        <StyleInclude Source="/Styles/Star.axaml" />
     </UserControl.Styles>
     <UserControl.Resources>
-        <uiutil:FileSizeValueConverter x:Key="FileSizeValueConverter"/>
+        <uiutil:FileSizeValueConverter x:Key="FileSizeValueConverter" />
     </UserControl.Resources>
     <Grid RowDefinitions="*,Auto">
-        <ListBox SelectedIndex="{CompiledBinding CurrentSelected}" ItemsSource="{CompiledBinding ListContents}" AutoScrollToSelectedItem="True">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid ColumnDefinitions="*,*" RowDefinitions="*,Auto" MaxHeight="400" MinHeight="100">
-                            <Grid.Styles>
-                                <Style Selector="TextBlock.MinorInfo">
-                                    <Setter Property="VerticalAlignment" Value="Center" />
-                                </Style>
-                                <Style Selector="Border.Tag">
-                                    <Setter Property="CornerRadius" Value="4" />
-                                    <Setter Property="Padding" Value="4" />
-                                </Style>
-                            </Grid.Styles>
-                            <Image Source="{CompiledBinding Image}" Grid.RowSpan="2" />
-                            <StackPanel Grid.Row="0" Grid.Column="1" Margin="12" Spacing="8">
-                                <TextBlock Text="{CompiledBinding FileName}" FontSize="20" />
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Classes="MinorInfo" Text="{CompiledBinding Img.FileSize, Converter={StaticResource FileSizeValueConverter} }" />
-                                    <TextBlock Classes="MinorInfo" Text="|" />
-                                    <TextBlock Classes="MinorInfo" Text="{CompiledBinding Resolution}" />
-                                    <Border Classes="Tag" Background="#16a085" IsVisible="{CompiledBinding TagBestSize}">
-                                        <TextBlock Foreground="White" Text="Best Size" />
-                                    </Border>
-                                    <Border Classes="Tag" Background="#2980b9" IsVisible="{CompiledBinding TagBestResolution}">
-                                        <TextBlock Foreground="White" Text="Best Resolution" />
-                                    </Border>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <TextBlock Classes="MinorInfo" Text="Similarity:" />
-                                    <Border Classes="Tag" Background="#22a6b3">
-                                        <TextBlock Foreground="White" Text="{CompiledBinding SimilarityText}" />
-                                    </Border>
-                                </StackPanel>
-                                <TextBlock Text="Full Path:" />
-                                <TextBlock Text="{CompiledBinding Img.FilePath}" />
-                            </StackPanel>
-                            <DockPanel HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" LastChildFill="True">
-                                <SplitButton Classes="tool" DockPanel.Dock="Right" Command="{Binding OpenExternal}">
-                                    <StackPanel>
-                                        <i:Icon Value="fa-solid fa-up-right-from-square" />
-                                        <TextBlock Text="Open" />
-                                    </StackPanel>
-                                    <SplitButton.Flyout>
-                                        <MenuFlyout>
-                                            <MenuItem i:MenuItem.Icon="fa-regular fa-folder" Command="{Binding OpenPath}"
-                                                      Header="Show In File Explorer">
-                                            </MenuItem>
-                                        </MenuFlyout>
-                                    </SplitButton.Flyout>
-                                </SplitButton>
-                                <Border DockPanel.Dock="Left" Classes.Selected="{CompiledBinding #_checkRemoval.IsChecked}" CornerRadius="4" BorderThickness="2"
-                                        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="16 4 16 4">
-                                    <Border.Styles>
-                                        <Style Selector="Border.Selected">
-                                            <Setter Property="Background" Value="#e74c3c"/>
-                                        </Style>
-                                        <Style Selector="Border.Selected TextBlock">
-                                            <Setter Property="Foreground" Value="White"/>
-                                        </Style>
-                                    </Border.Styles>
-                                    <CheckBox x:Name="_checkRemoval" Margin="2 0 2 0 " HorizontalAlignment="Stretch">
-                                        <TextBlock Text="Mark for removal"/>
-                                    </CheckBox>
+        <ListBox SelectedIndex="{CompiledBinding CurrentSelected}" ItemsSource="{CompiledBinding ListContents}"
+                 AutoScrollToSelectedItem="True">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="*,Auto" MaxHeight="400" MinHeight="100">
+                        <Grid.Styles>
+                            <Style Selector="TextBlock.MinorInfo">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                            </Style>
+                            <Style Selector="Border.Tag">
+                                <Setter Property="CornerRadius" Value="4" />
+                                <Setter Property="Padding" Value="4" />
+                            </Style>
+                        </Grid.Styles>
+                        <Image Source="{CompiledBinding Image, Mode=OneTime}" Grid.RowSpan="2" />
+                        <StackPanel Grid.Row="0" Grid.Column="1" Margin="12" Spacing="8">
+                            <TextBlock Text="{CompiledBinding FileName, Mode=OneTime}" FontSize="20" />
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Classes="MinorInfo"
+                                           Text="{CompiledBinding Img.FileSize, Converter={StaticResource FileSizeValueConverter}, Mode=OneTime }" />
+                                <TextBlock Classes="MinorInfo" Text="|" />
+                                <TextBlock Classes="MinorInfo">
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} x {1}">
+                                            <CompiledBinding Path="Img.Width" Mode="OneTime" />
+                                            <CompiledBinding Path="Img.Height" Mode="OneTime" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                                <Border Classes="Tag" Background="#16a085"
+                                        IsVisible="{CompiledBinding TagBestSize, Mode=OneTime}">
+                                    <TextBlock Foreground="White" Text="Best Size" />
                                 </Border>
-                            </DockPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                                <Border Classes="Tag" Background="#2980b9"
+                                        IsVisible="{CompiledBinding TagBestResolution, Mode=OneTime}">
+                                    <TextBlock Foreground="White" Text="Best Resolution" />
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock Classes="MinorInfo" Text="Similarity:" />
+                                <Border Classes="Tag" Background="#22a6b3">
+                                    <TextBlock Foreground="White" Text="{CompiledBinding SimilarityText}" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="Full Path:" />
+                            <TextBlock Text="{CompiledBinding Img.FilePath, Mode=OneTime}" />
+                        </StackPanel>
+                        <DockPanel HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1" LastChildFill="True">
+                            <SplitButton Classes="tool" DockPanel.Dock="Right" Command="{Binding OpenExternal}">
+                                <StackPanel>
+                                    <i:Icon Value="fa-solid fa-up-right-from-square" />
+                                    <TextBlock Text="Open" />
+                                </StackPanel>
+                                <SplitButton.Flyout>
+                                    <MenuFlyout>
+                                        <MenuItem i:MenuItem.Icon="fa-regular fa-folder" Command="{Binding OpenPath}"
+                                                  Header="Show In File Explorer">
+                                        </MenuItem>
+                                    </MenuFlyout>
+                                </SplitButton.Flyout>
+                            </SplitButton>
+                            <Border DockPanel.Dock="Left" Classes.Selected="{CompiledBinding #_checkRemoval.IsChecked}"
+                                    CornerRadius="4" BorderThickness="2"
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="16 4 16 4">
+                                <Border.Styles>
+                                    <Style Selector="Border.Selected">
+                                        <Setter Property="Background" Value="#e74c3c" />
+                                    </Style>
+                                    <Style Selector="Border.Selected TextBlock">
+                                        <Setter Property="Foreground" Value="White" />
+                                    </Style>
+                                </Border.Styles>
+                                <CheckBox x:Name="_checkRemoval" Margin="2 0 2 0 " HorizontalAlignment="Stretch" IsChecked="{CompiledBinding Img.MarkedForRemoval}">
+                                    <TextBlock Text="Mark for removal" />
+                                </CheckBox>
+                            </Border>
+                        </DockPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <DockPanel Grid.Row="1" LastChildFill="True">
             <Button Classes="tool" DockPanel.Dock="Left" Command="{Binding Previous}">
                 <StackPanel>
@@ -96,7 +108,7 @@
             <DropDownButton Content="Options">
                 <DropDownButton.Flyout>
                     <MenuFlyout>
-                        <MenuItem i:MenuItem.Icon="fa-file-export" Header="Export Raw Data As Json"/>
+                        <MenuItem i:MenuItem.Icon="fa-file-export" Header="Export Raw Data As Json" />
                     </MenuFlyout>
                 </DropDownButton.Flyout>
             </DropDownButton>
@@ -112,7 +124,7 @@
                     <TextBlock>Next Group</TextBlock>
                 </StackPanel>
             </Button>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{CompiledBinding StatusbarText}"/>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{CompiledBinding StatusbarText}" />
         </DockPanel>
     </Grid>
 </UserControl>

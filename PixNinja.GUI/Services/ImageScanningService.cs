@@ -14,7 +14,7 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace PixNinja.GUI.Services;
 
-public class ImageScanningService : ReactiveObject
+public class ImageScanningService : ServiceBase
 {
     public List<string> ImageFilePaths { get; private set; } = new();
     public List<ImgFile> ImgFiles { get; } = new();
@@ -98,6 +98,7 @@ public class ImageScanningService : ReactiveObject
                 LastFileName = ImgFiles.LastOrDefault()?.FilePath ?? string.Empty;
             }
         }
+        GC.Collect();
 
         CompletedCountSync = _completedCount;
 
@@ -111,7 +112,9 @@ public class ImageScanningService : ReactiveObject
     public List<List<ImgFile>> SummarizeGroupsFromTree()
     {
         // Building Data Hashes
+        Debug.WriteLine("Indexing hashes...");
         _imgTree = new VpTree<ImgFile>(ImgFiles.ToArray(), (x, y) => (int)x.ImageDiff(y));
+        Debug.WriteLine("VPTree built.");
 
         Dsu dsu = new(ImgFiles.Count);
         foreach (var item in ImgFiles)
@@ -120,6 +123,7 @@ public class ImageScanningService : ReactiveObject
             result.ForEach(t => dsu.Union(item.Id, t.Item1.Id));
         }
 
+        Debug.WriteLine("Dsu built.");
         Dictionary<int, List<ImgFile>> groupsDict = new();
         foreach (var item in ImgFiles)
         {
@@ -137,6 +141,7 @@ public class ImageScanningService : ReactiveObject
             }
         }
 
+        Debug.WriteLine("GroupDict built.");
         List<List<ImgFile>> resultGroups = new();
         foreach (var (id, value) in groupsDict)
         {
@@ -145,6 +150,7 @@ public class ImageScanningService : ReactiveObject
             resultGroups.Add(value);
         }
 
+        Debug.WriteLine("Exiting...");
         return resultGroups;
     }
 }

@@ -36,7 +36,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
     public ObservableCollection<ImageCompareElementModel> ListContents { get; } = new();
 
     public List<ImgFile> CurrentGroup => _imageScanningService.ImgGroups![CurrentGroupId];
-    
+
     public int CurrentSelected
     {
         get => _currentSelected;
@@ -101,17 +101,18 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
         ListContents.Clear();
         var bestSize = CurrentGroup.MaxBy(t => t.FileSize)!;
         var bestRes = CurrentGroup.MaxBy(t => (long)t.Width * t.Height)!;
-        
+
         var converted = await Task.WhenAll(CurrentGroup.Select(async t =>
         {
             if (t.FileHash is null)
             {
                 await t.ComputeFileHash();
             }
-            return new ImageCompareElementModel(t, t.Width * t.Height == bestRes.Width * bestRes.Height, t.FileSize == bestSize.FileSize);
+            return new ImageCompareElementModel(t, t.Width * t.Height == bestRes.Width * bestRes.Height,
+                t.FileSize == bestSize.FileSize);
         }).ToList());
         ListContents.AddRange(converted);
-        
+
         UpdateSimilarities();
     }
 
@@ -121,6 +122,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
         {
             return;
         }
+
         if (CurrentSelected < 0 || CurrentSelected > ListContents.Count)
         {
             CurrentSelected = 0;
@@ -133,6 +135,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
                 ListContents[i].Similarity = -2;
                 continue;
             }
+
             if (ListContents[i].Img.FileHash!.SequenceEqual(ListContents[CurrentSelected].Img.FileHash!))
             {
                 ListContents[i].Similarity = -1;
@@ -150,9 +153,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
 
 #pragma warning disable CS8618
     [Obsolete("For design purpose only.")]
-    public ComparePageViewModel()
-    {
-    }
+    public ComparePageViewModel() { }
 #pragma warning restore CS8618
 
     #endregion

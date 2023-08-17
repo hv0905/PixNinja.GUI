@@ -3,7 +3,7 @@ using ReactiveUI;
 
 namespace PixNinja.GUI.Services;
 
-public class RouteService : ReactiveObject
+public class RouteService : ServiceBase
 {
     public HomePageViewModel? HomePageViewModel { get; set; }
     

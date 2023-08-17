@@ -10,7 +10,6 @@ namespace PixNinja.GUI.ViewModels;
 public class ImageCompareElementModel : ReactiveObject
 {
     public string FileName => Path.GetFileName(Img.FilePath);
-    public string Resolution => $"{Img.Width} x {Img.Height}";
     public bool TagBestResolution { get; }
     public bool TagBestSize { get; }
     public Bitmap Image { get; }

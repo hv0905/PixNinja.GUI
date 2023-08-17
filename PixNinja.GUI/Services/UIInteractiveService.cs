@@ -8,7 +8,7 @@ using ReactiveUI;
 
 namespace PixNinja.GUI.Services;
 
-public class UiInteractiveService : ReactiveObject
+public class UiInteractiveService : ServiceBase
 {
     public async Task Warning(string text, string title = "Warning")
     {

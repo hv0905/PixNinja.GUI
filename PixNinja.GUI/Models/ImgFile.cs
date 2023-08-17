@@ -12,8 +12,8 @@ public record ImgFile(string FilePath, int Width, int Height, ulong Hash, long F
     // Greater value means less similar
 
     public byte[]? FileHash { get; set; }
-    
     public long Length { get; set; }
+    public bool MarkedForRemoval { get; set; } = false;
     public uint ImageDiff(ImgFile other)
     {
         return BitComparer.BitCount(Hash ^ other.Hash);
