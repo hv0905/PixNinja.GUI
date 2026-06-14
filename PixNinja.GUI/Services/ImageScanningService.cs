@@ -19,7 +19,7 @@ public class ImageScanningService : ServiceBase
     public List<string> ImageFilePaths { get; private set; } = new();
     public List<ImgFile> ImgFiles { get; } = new();
     public IImageHash HashAlgo = new PerceptualHash();
-    public int Similarity { get; set; } = 2;
+    public int Similarity { get; set; } = 3;
 
     private int _completedCount;
     private int _completedCountSync;
@@ -50,7 +50,7 @@ public class ImageScanningService : ServiceBase
                     IgnoreInaccessible = true,
                     RecurseSubdirectories = true
                 })
-                .Where(t => t.EndsWith(".jpg") || t.EndsWith(".png") || t.EndsWith(".jpeg") || t.EndsWith(".jfif")));
+                .Where(t => t.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || t.EndsWith(".png", StringComparison.OrdinalIgnoreCase) || t.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase) || t.EndsWith(".jfif", StringComparison.OrdinalIgnoreCase)));
         }
 
         ImageFilePaths = ImageFilePaths.Distinct().ToList();

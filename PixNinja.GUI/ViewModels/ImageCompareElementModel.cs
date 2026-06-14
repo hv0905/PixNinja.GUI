@@ -12,7 +12,7 @@ public class ImageCompareElementModel : ReactiveObject
     public string FileName => Path.GetFileName(Img.FilePath);
     public bool TagBestResolution { get; }
     public bool TagBestSize { get; }
-    public Bitmap Image { get; }
+    public Bitmap? Image { get; }
     public ImgFile Img { get; }
 
     private bool _shouldRemove;
@@ -38,11 +38,20 @@ public class ImageCompareElementModel : ReactiveObject
         Img = img;
         TagBestResolution = tagBestResolution;
         TagBestSize = tagBestSize;
-        Image = new Bitmap(Img.FilePath);
+        if (File.Exists(Img.FilePath))
+        {
+            Image = new Bitmap(Img.FilePath);
+        }
+        else
+        {
+            Image = null;
+        }
+        
 
         _similarityText = this.WhenAnyValue(t => t.Similarity)
             .Select(t => t switch
             {
+                -3 => "Not Found",
                 -2 => "Base",
                 -1 => "Exact Copy",
                 _ => $"{t} %"

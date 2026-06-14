@@ -109,6 +109,7 @@
                 <DropDownButton.Flyout>
                     <MenuFlyout>
                         <MenuItem i:MenuItem.Icon="fa-file-export" Header="Export Raw Data As Json" />
+                        <MenuItem i:MenuItem.Icon="fa-arrows-rotate" Header="Remove Invalid items"></MenuItem>
                     </MenuFlyout>
                 </DropDownButton.Flyout>
             </DropDownButton>

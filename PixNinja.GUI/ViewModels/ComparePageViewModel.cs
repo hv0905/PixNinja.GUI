@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -101,10 +102,26 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
         ListContents.Clear();
         var bestSize = CurrentGroup.MaxBy(t => t.FileSize)!;
         var bestRes = CurrentGroup.MaxBy(t => (long)t.Width * t.Height)!;
+        
+        if (CurrentGroup.Count(t => !File.Exists(t.FilePath)) >= CurrentGroup.Count - 1)
+        {
+            _imageScanningService.ImgGroups!.RemoveAt(CurrentGroupId);
+            if (_imageScanningService.ImgGroups.Count == 0)
+            {
+                await _uiInteractiveService.Warning("All items are invalid!");
+                _routeService.HostWindow.Router.Navigate.Execute(_routeService.HomePageViewModel!);
+                return;
+            }
+            
+            if (CurrentGroupId >= _imageScanningService.ImgGroups.Count)
+            {
+                CurrentGroupId = _imageScanningService.ImgGroups.Count - 1;
+            }
+        }
 
         var converted = await Task.WhenAll(CurrentGroup.Select(async t =>
         {
-            if (t.FileHash is null)
+            if ( t.FileHash is null && File.Exists(t.FilePath))
             {
                 await t.ComputeFileHash();
             }
@@ -133,6 +150,11 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
             if (i == CurrentSelected)
             {
                 ListContents[i].Similarity = -2;
+                continue;
+            }
+            if (ListContents[i].Img.FileHash is null || ListContents[CurrentSelected].Img.FileHash is null)
+            {
+                ListContents[i].Similarity = -3;
                 continue;
             }
 

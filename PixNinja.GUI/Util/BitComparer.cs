@@ -1,4 +1,6 @@
-﻿namespace PixNinja.GUI.Util;
+﻿using System.Numerics;
+
+namespace PixNinja.GUI.Util;
 
 public static class BitComparer
 {
@@ -16,11 +18,12 @@ public static class BitComparer
 
     public static uint BitCount(ulong num)
     {
-        uint count = 0;
-        for (; num > 0; num >>= 8)
-        {
-            count += BIT_COUNTS[num & 0xff];
-        }
-        return count;
+        return (uint)BitOperations.PopCount(num);
+        // uint count = 0;
+        // for (; num > 0; num >>= 8)
+        // {
+        //     count += BIT_COUNTS[num & 0xff];
+        // }
+        // return count;
     }
 }
