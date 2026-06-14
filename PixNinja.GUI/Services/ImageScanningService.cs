@@ -17,6 +17,7 @@ namespace PixNinja.GUI.Services;
 public class ImageScanningService : ServiceBase
 {
     public List<string> ImageFilePaths { get; private set; } = new();
+    public List<string> ScanRoots { get; } = new();
     public List<ImgFile> ImgFiles { get; } = new();
     public IImageHash HashAlgo = new PerceptualHash();
     public int Similarity { get; set; } = 3;
@@ -41,11 +42,39 @@ public class ImageScanningService : ServiceBase
 
     public string? LastFileName { get; set; }
 
+    public void Reset()
+    {
+        ImageFilePaths = new List<string>();
+        ScanRoots.Clear();
+        ImgFiles.Clear();
+        ImgGroups = null;
+        _imgTree = null;
+        _completedCount = 0;
+        CompletedCountSync = 0;
+        LastFileName = string.Empty;
+    }
+
+    public List<ImgFile> GetMarkedFiles()
+    {
+        var comparer = OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+        return ImgFiles
+            .Where(t => t.MarkedForRemoval)
+            .GroupBy(t => t.FilePath, comparer)
+            .Select(t => t.First())
+            .ToList();
+    }
+
     public void ScanAndAdd(IEnumerable<string> paths)
     {
         foreach (var path in paths)
         {
-            ImageFilePaths.AddRange(Directory.GetFiles(path, "*", new EnumerationOptions
+            var fullPath = Path.GetFullPath(path).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (!ScanRoots.Contains(fullPath, OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal))
+            {
+                ScanRoots.Add(fullPath);
+            }
+
+            ImageFilePaths.AddRange(Directory.GetFiles(fullPath, "*", new EnumerationOptions
                 {
                     IgnoreInaccessible = true,
                     RecurseSubdirectories = true

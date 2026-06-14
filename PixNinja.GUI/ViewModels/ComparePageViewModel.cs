@@ -80,6 +80,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
 
     public void Complete()
     {
+        _routeService.CompletePageViewModel!.Init();
         _routeService.HostWindow.Router.Navigate.Execute(_routeService.CompletePageViewModel!);
     }
 

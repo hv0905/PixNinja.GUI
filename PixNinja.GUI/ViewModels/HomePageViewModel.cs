@@ -49,6 +49,7 @@ namespace PixNinja.GUI.ViewModels
                 // ReSharper disable once AsyncVoidLambda
                 HostScreen.Router.Navigate.Execute(_routeService.ProgressPageViewModel!).Subscribe(async _ =>
                 {
+                    _imageScanningService.Reset();
                     _imageScanningService.ScanAndAdd(Paths);
                     await _imageScanningService.ComputeHash();
                     _routeService.ComparePageViewModel!.Init();

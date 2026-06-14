@@ -1,4 +1,4 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -29,21 +29,24 @@
                         <StackPanel Grid.Row="0" Grid.Column="1">
                             <TextBlock Classes="xxl" Text="Purge" Foreground="{StaticResource BrushDanger}" />
                             <TextBlock TextWrapping="Wrap">
-                                Delete all the images you've marked for removal to reclaim the disk space.
+                                Move all the images you've marked for removal to the Windows Recycle Bin.
                                 <LineBreak />
-                                <Bold>WARNING: All the file you marked will be PERMANENTLY deleted. This operation cannot be undone.</Bold>
+                                <Bold>This is safer than permanent deletion, but you should still review the marked files before continuing.</Bold>
                             </TextBlock>
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="This will delete 999 images, " />
-                                <TextBlock Text="reclaim up to 999M of disk space." />
+                                <TextBlock Text="This will process " />
+                                <TextBlock Text="{Binding MarkedCount}" />
+                                <TextBlock Text=" image(s), reclaiming up to " />
+                                <TextBlock Text="{Binding MarkedTotalSizeText}" />
+                                <TextBlock Text=" of disk space." />
                             </StackPanel>
                         </StackPanel>
                         <DockPanel Grid.Column="1" Grid.Row="1">
                             <Button Classes="tool" Content="Purge" Background="{StaticResource BrushDanger}"
-                                    DockPanel.Dock="Right" IsEnabled="{CompiledBinding #check_PurgeConfirm.IsChecked}" />
-                            <CheckBox x:Name="check_PurgeConfirm"
-                                      Content="Yes, I confirm that I wish to delete all the images I have marked."
-                                      DockPanel.Dock="Left" />
+                                    DockPanel.Dock="Right" Command="{Binding Purge}" IsEnabled="{Binding CanPurge}" />
+                            <CheckBox Content="Yes, I confirm that I wish to move all marked images to the Recycle Bin."
+                                      DockPanel.Dock="Left" IsChecked="{Binding PurgeConfirmed}"
+                                      IsEnabled="{Binding CanProcess}" />
                         </DockPanel>
                     </Grid>
                 </Border>
@@ -54,10 +57,11 @@
                         <StackPanel Grid.Row="0" Grid.Column="1">
                             <TextBlock Classes="xxl" Text="Move File" />
                             <TextBlock TextWrapping="Wrap">
-                                Move all the files you have marked for removal to a directory of your choice. You can then delete or archive them as needed.
+                                Move all the files you have marked for removal to a directory of your choice. PixNinja will preserve their source-relative paths and avoid overwriting existing files.
                             </TextBlock>
                         </StackPanel>
-                        <Button Grid.Column="1" Grid.Row="1" Classes="tool" Content="Move" HorizontalAlignment="Right" />
+                        <Button Grid.Column="1" Grid.Row="1" Classes="tool" Content="Move" HorizontalAlignment="Right"
+                                Command="{Binding MoveAway}" IsEnabled="{Binding CanProcess}" />
                     </Grid>
                 </Border>
                 <Border Classes="card">
@@ -67,28 +71,36 @@
                         <StackPanel Grid.Row="0" Grid.Column="1">
                             <TextBlock Classes="xxl" Text="Export list" />
                             <TextBlock TextWrapping="Wrap">
-                                Write the paths of all the image files you have marked for removal to either a plain text file or a JSON array. Afterward, you can utilize your own script to manage these files.
+                                Write the paths of all the image files you have marked for removal to either a plain text file or a JSON document. Afterward, you can utilize your own script to manage these files.
                             </TextBlock>
                         </StackPanel>
-                        <Button Grid.Column="1" Grid.Row="1" Classes="tool" Content="Export"
-                                HorizontalAlignment="Right" />
+                        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Classes="tool" Content="Export Text" Command="{Binding ExportText}"
+                                    IsEnabled="{Binding CanProcess}" />
+                            <Button Classes="tool" Content="Export Json" Command="{Binding ExportJson}"
+                                    IsEnabled="{Binding CanProcess}" />
+                        </StackPanel>
                     </Grid>
                 </Border>
             </StackPanel>
         </ScrollViewer>
-        <StackPanel Grid.Row="1" HorizontalAlignment="Right" Orientation="Horizontal">
-            <Button Classes="tool">
-                <StackPanel>
-                    <i:Icon Value="fa-house"/>
-                    <TextBlock Text="Home"/>
-                </StackPanel>
-            </Button>
-            <Button Classes="tool">
-                <StackPanel>
-                    <i:Icon Value="fa-check"/>
-                    <TextBlock Text="Exit"/>
-                </StackPanel>
-            </Button>
-        </StackPanel>
+        <DockPanel Grid.Row="1" LastChildFill="True">
+            <TextBlock VerticalAlignment="Center" Text="{Binding StatusText}" />
+            <ProgressBar DockPanel.Dock="Right" Width="160" IsIndeterminate="True" IsVisible="{Binding IsBusy}" />
+            <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Orientation="Horizontal">
+                <Button Classes="tool" Command="{Binding GoHome}" IsEnabled="{Binding IsNotBusy}">
+                    <StackPanel>
+                        <i:Icon Value="fa-house"/>
+                        <TextBlock Text="Home"/>
+                    </StackPanel>
+                </Button>
+                <Button Classes="tool" Command="{Binding Exit}" IsEnabled="{Binding IsNotBusy}">
+                    <StackPanel>
+                        <i:Icon Value="fa-check"/>
+                        <TextBlock Text="Exit"/>
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </DockPanel>
     </Grid>
 </UserControl>
