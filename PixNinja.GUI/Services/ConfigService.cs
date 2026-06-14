@@ -7,30 +7,37 @@ namespace PixNinja.GUI.Services;
 
 public class ConfigService : ServiceBase
 {
-    private static readonly string configDir =
-        string.IsNullOrEmpty(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData))
-            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "PixNinja")
-            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".PixNinja");
-    private static readonly string fileName = "config.json";
+    private const string FileName = "config.json";
+    private readonly string _configDir;
+    private readonly string _filePath;
 
-    private static readonly string filePath =Path.Combine(configDir, fileName);
+    private readonly string _legacyFilePath;
 
     public AppSettings Settings { get; set; }
 
     public void SaveConfigure()
     {
-        if (!Directory.Exists(configDir)) Directory.CreateDirectory(configDir);
-        using var f = File.Open(filePath, FileMode.Create);
+        if (!Directory.Exists(_configDir)) Directory.CreateDirectory(_configDir);
+        using var f = File.Open(_filePath, FileMode.Create);
         JsonSerializer.Serialize(f, Settings, SourceGenerationContext.Default.AppSettings);
     }
 
-    public ConfigService()
+    public ConfigService() : this(new AppPathService())
     {
-        if (File.Exists(filePath))
+    }
+
+    public ConfigService(AppPathService appPathService)
+    {
+        _configDir = appPathService.ConfigDirectory;
+        _filePath = Path.Combine(_configDir, FileName);
+        _legacyFilePath = Path.Combine(appPathService.LegacyConfigDirectory, FileName);
+
+        var loadPath = File.Exists(_filePath) ? _filePath : _legacyFilePath;
+        if (File.Exists(loadPath))
         {
             try
             {
-                using var f = File.OpenRead(filePath);
+                using var f = File.OpenRead(loadPath);
                 Settings = JsonSerializer.Deserialize(f, SourceGenerationContext.Default.AppSettings) ??
                            new AppSettings();
             }

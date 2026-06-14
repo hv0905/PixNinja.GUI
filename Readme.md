@@ -1,6 +1,6 @@
 ﻿# PixNinja.GUI
 
- [![Windows Build](https://github.com/hv0905/PixNinja.GUI/actions/workflows/windows-build.yml/badge.svg)](https://github.com/hv0905/PixNinja.GUI/actions/workflows/windows-build.yml)
+ [![Cross-platform Build](https://github.com/hv0905/PixNinja.GUI/actions/workflows/windows-build.yml/badge.svg)](https://github.com/hv0905/PixNinja.GUI/actions/workflows/windows-build.yml)
 
 A handy utility for scanning and analyzing all duplicate images on your system using Image Hash.
 
@@ -12,9 +12,9 @@ A handy utility for scanning and analyzing all duplicate images on your system u
 
 ## Develop
 
-This project is built with .NET 7.
+This project is built with .NET 10.
 
-You need to install [.NET 7 SDK](https://dot.net) first, then run the following command to build the project.
+You need to install [.NET 10 SDK](https://dot.net) first, then run the following command to build the project.
 
 ```shell
 # Restore and Build

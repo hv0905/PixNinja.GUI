@@ -1,6 +1,5 @@
-﻿using Avalonia.Markup.Xaml;
-using Avalonia.ReactiveUI;
 using PixNinja.GUI.ViewModels;
+using ReactiveUI.Avalonia;
 
 namespace PixNinja.GUI.Views;
 

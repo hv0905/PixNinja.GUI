@@ -1,9 +1,10 @@
 using System;
 using Avalonia;
 using Avalonia.Media;
-using Avalonia.ReactiveUI;
-using Projektanker.Icons.Avalonia;
-using Projektanker.Icons.Avalonia.FontAwesome;
+using Optris.Icons.Avalonia;
+using Optris.Icons.Avalonia.FontAwesome;
+using Optris.Icons.Avalonia.FontAwesome7;
+using ReactiveUI.Avalonia;
 
 namespace PixNinja.GUI;
 
@@ -24,13 +25,16 @@ internal static class Program
         {
             fontOptions.DefaultFamilyName = "Noto Sans, Ubuntu, sans-serif";
         }
-        
-        IconProvider.Current.Register<FontAwesomeIconProvider>();
-        
+
+        IconProvider.Current
+            .Register<FontAwesomeIconProvider>()
+            .Register<FontAwesome7IconProvider>();
+            // .Register<MaterialDesignIconProvider>();
+
         return AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .LogToTrace()
-            .UseReactiveUI()
+            .UseReactiveUI(_ => { })
             .With(fontOptions);
     }
 }

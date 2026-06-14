@@ -1,8 +1,8 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using Avalonia.ReactiveUI;
 using PixNinja.GUI.ViewModels;
+using ReactiveUI.Avalonia;
 
 namespace PixNinja.GUI.Views;
 

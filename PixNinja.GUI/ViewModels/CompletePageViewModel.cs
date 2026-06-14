@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
-using Microsoft.VisualBasic.FileIO;
 using PixNinja.GUI.Models;
 using PixNinja.GUI.Services;
 using ReactiveUI;
@@ -17,6 +17,7 @@ public class CompletePageViewModel : ViewModelBase, IRoutableViewModel
     private readonly RouteService _routeService;
     private readonly ImageScanningService _imageScanningService;
     private readonly UiInteractiveService _uiInteractiveService;
+    private readonly TrashService _trashService;
     private bool _isBusy;
     private bool _purgeConfirmed;
     private int _markedCount;
@@ -79,11 +80,12 @@ public class CompletePageViewModel : ViewModelBase, IRoutableViewModel
     }
 
     public CompletePageViewModel(RouteService routeService, ImageScanningService imageScanningService,
-        UiInteractiveService uiInteractiveService)
+        UiInteractiveService uiInteractiveService, TrashService trashService)
     {
         _routeService = routeService;
         _imageScanningService = imageScanningService;
         _uiInteractiveService = uiInteractiveService;
+        _trashService = trashService;
     }
 
     public void Init()
@@ -96,26 +98,22 @@ public class CompletePageViewModel : ViewModelBase, IRoutableViewModel
     {
         if (!CanPurge) return;
 
-        if (!OperatingSystem.IsWindows())
-        {
-            await _uiInteractiveService.Warning("Purge uses the Windows Recycle Bin and is only available on Windows.");
-            return;
-        }
-
         var confirmed = await _uiInteractiveService.Question(
-            $"Move {MarkedCount} marked image(s) to the Recycle Bin?",
+            $"Move {MarkedCount} marked image(s) to the system Trash/Recycle Bin?",
             "Confirm purge");
         if (!confirmed) return;
 
-        await RunFinalizingOperation("Moving files to the Recycle Bin...", "Purge complete", img =>
+        await RunFinalizingOperation("Moving files to the system Trash/Recycle Bin...", "Purge complete", async img =>
         {
             if (!File.Exists(img.FilePath)) return OperationResult.Skipped();
 
-            Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(
-                img.FilePath,
-                UIOption.OnlyErrorDialogs,
-                RecycleOption.SendToRecycleBin,
-                UICancelOption.ThrowException);
+            var result = await _trashService.MoveFileToTrash(img.FilePath);
+            if (result.WasSkipped) return OperationResult.Skipped();
+            if (!result.Success)
+            {
+                throw new IOException(result.ErrorMessage ?? "Could not move file to the system Trash/Recycle Bin.");
+            }
+
             return OperationResult.Succeeded();
         });
     }
@@ -191,10 +189,10 @@ public class CompletePageViewModel : ViewModelBase, IRoutableViewModel
         });
     }
 
-    public void GoHome()
+    public async void GoHome()
     {
         _imageScanningService.Reset();
-        _routeService.HostWindow.Router.Navigate.Execute(_routeService.HomePageViewModel!);
+        await _routeService.HostWindow.Router.Navigate.Execute(_routeService.HomePageViewModel!).ToTask();
     }
 
     public void Exit()
@@ -221,7 +219,10 @@ public class CompletePageViewModel : ViewModelBase, IRoutableViewModel
         return false;
     }
 
-    private async Task RunFinalizingOperation(string busyText, string title, Func<ImgFile, OperationResult> action)
+    private Task RunFinalizingOperation(string busyText, string title, Func<ImgFile, OperationResult> action) =>
+        RunFinalizingOperation(busyText, title, img => Task.FromResult(action(img)));
+
+    private async Task RunFinalizingOperation(string busyText, string title, Func<ImgFile, Task<OperationResult>> action)
     {
         var markedFiles = _imageScanningService.GetMarkedFiles();
         if (!await EnsureMarkedFiles(markedFiles)) return;
@@ -231,7 +232,7 @@ public class CompletePageViewModel : ViewModelBase, IRoutableViewModel
         StatusText = busyText;
         try
         {
-            summary = await Task.Run(() => ProcessFiles(markedFiles, action));
+            summary = await ProcessFiles(markedFiles, action);
         }
         finally
         {
@@ -240,7 +241,7 @@ public class CompletePageViewModel : ViewModelBase, IRoutableViewModel
 
         await _uiInteractiveService.Info(BuildOperationSummary(summary), title);
         _imageScanningService.Reset();
-        _routeService.HostWindow.Router.Navigate.Execute(_routeService.HomePageViewModel!);
+        await _routeService.HostWindow.Router.Navigate.Execute(_routeService.HomePageViewModel!).ToTask();
     }
 
     private async Task RunBusyOnly(string busyText, Func<Task> action)
@@ -258,14 +259,15 @@ public class CompletePageViewModel : ViewModelBase, IRoutableViewModel
         }
     }
 
-    private static OperationSummary ProcessFiles(IEnumerable<ImgFile> files, Func<ImgFile, OperationResult> action)
+    private static async Task<OperationSummary> ProcessFiles(IEnumerable<ImgFile> files,
+        Func<ImgFile, Task<OperationResult>> action)
     {
         var summary = new OperationSummary();
         foreach (var file in files)
         {
             try
             {
-                var result = action(file);
+                var result = await action(file);
                 if (result.Kind == OperationResultKind.Succeeded)
                 {
                     summary.Succeeded++;

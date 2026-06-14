@@ -1,4 +1,4 @@
-name: Windows Build
+name: Cross-platform Build
 
 on:
   push:
@@ -7,41 +7,44 @@ on:
     branches: [ "master" ]
 
 jobs:
-
   build:
-    runs-on: windows-latest  # For a list of available runner types, refer to
-                             # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
+    name: Build ${{ matrix.rid }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            rid: win-x64
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: macos-latest
+            rid: osx-x64
+          - os: macos-latest
+            rid: osx-arm64
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    # Install the .NET Core workload
-    - name: Install .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 7.0.x
-        
-    - name: Restore the application
-      run: dotnet restore
-      
+      - name: Install .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
 
-    # Execute all unit tests in the solution
-    - name: Execute unit tests
-      run: dotnet test
-        
-    - name: Publish the app
-      run: dotnet publish -c $env:Configuration -r win-x64 --sc
-      env:
-        Configuration: Release
+      - name: Restore
+        run: dotnet restore
 
-    - name: Zip the release artifact
-      run: mkdir dist && Compress-Archive -Path ./PixNinja.GUI/bin/Release/net6.0/win-x64/publish/ -Destination ./dist/windows-release.zip
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
+      - name: Publish
+        run: dotnet publish PixNinja.GUI/PixNinja.GUI.csproj --configuration Release --runtime ${{ matrix.rid }} --self-contained true --output artifacts/${{ matrix.rid }}
 
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: Windows Release
-        path: ./dist/windows-release.zip
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: PixNinja.GUI-${{ matrix.rid }}
+          path: artifacts/${{ matrix.rid }}

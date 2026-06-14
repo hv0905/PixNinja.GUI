@@ -5,7 +5,7 @@
              xmlns:local="clr-namespace:PixNinja.GUI.ViewModels"
              xmlns:uiutil="clr-namespace:PixNinja.GUI.UIUtil"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450" x:DataType="local:ComparePageViewModel"
-             xmlns:i="clr-namespace:Projektanker.Icons.Avalonia;assembly=Projektanker.Icons.Avalonia"
+             xmlns:i="clr-namespace:Optris.Icons.Avalonia;assembly=Optris.Icons.Avalonia"
              x:Class="PixNinja.GUI.Views.ComparePage">
     <Design.DataContext>
         <local:ComparePageViewModel />
@@ -20,7 +20,7 @@
         <ListBox SelectedIndex="{CompiledBinding CurrentSelected}" ItemsSource="{CompiledBinding ListContents}"
                  AutoScrollToSelectedItem="True">
             <ListBox.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate x:DataType="local:ImageCompareElementModel">
                     <Grid ColumnDefinitions="*,*" RowDefinitions="*,Auto" MaxHeight="400" MinHeight="100">
                         <Grid.Styles>
                             <Style Selector="TextBlock.MinorInfo">
@@ -41,8 +41,8 @@
                                 <TextBlock Classes="MinorInfo">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="{}{0} x {1}">
-                                            <CompiledBinding Path="Img.Width" Mode="OneTime" />
-                                            <CompiledBinding Path="Img.Height" Mode="OneTime" />
+                                            <Binding Path="Img.Width" Mode="OneTime" />
+                                            <Binding Path="Img.Height" Mode="OneTime" />
                                         </MultiBinding>
                                     </TextBlock.Text>
                                 </TextBlock>
@@ -73,7 +73,7 @@
                                 <SplitButton.Flyout>
                                     <MenuFlyout>
                                         <MenuItem i:MenuItem.Icon="fa-regular fa-folder" Command="{Binding OpenPath}"
-                                                  Header="Show In File Explorer">
+                                                  Header="Show in Folder">
                                         </MenuItem>
                                     </MenuFlyout>
                                 </SplitButton.Flyout>

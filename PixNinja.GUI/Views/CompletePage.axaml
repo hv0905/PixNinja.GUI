@@ -3,8 +3,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:PixNinja.GUI.ViewModels"
-             xmlns:i="https://github.com/projektanker/icons.avalonia"
+             xmlns:i="clr-namespace:Optris.Icons.Avalonia;assembly=Optris.Icons.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:DataType="vm:CompletePageViewModel"
              x:Class="PixNinja.GUI.Views.CompletePage">
     <Design.DataContext>
         <vm:CompletePageViewModel />
@@ -29,7 +30,7 @@
                         <StackPanel Grid.Row="0" Grid.Column="1">
                             <TextBlock Classes="xxl" Text="Purge" Foreground="{StaticResource BrushDanger}" />
                             <TextBlock TextWrapping="Wrap">
-                                Move all the images you've marked for removal to the Windows Recycle Bin.
+                                Move all the images you've marked for removal to the system Trash/Recycle Bin.
                                 <LineBreak />
                                 <Bold>This is safer than permanent deletion, but you should still review the marked files before continuing.</Bold>
                             </TextBlock>

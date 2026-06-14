@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Threading.Tasks;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DynamicData;
@@ -18,6 +19,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
     private readonly ImageScanningService _imageScanningService;
     private readonly RouteService _routeService;
     private readonly UiInteractiveService _uiInteractiveService;
+    private readonly FileLauncherService _fileLauncherService;
     private readonly ObservableAsPropertyHelper<string> _statusbarText;
 
     private int _currentGroupId;
@@ -45,26 +47,27 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
     }
 
     public ComparePageViewModel(ImageScanningService imageScanningService, RouteService routeService,
-        UiInteractiveService uiInteractiveService)
+        UiInteractiveService uiInteractiveService, FileLauncherService fileLauncherService)
     {
         _imageScanningService = imageScanningService;
         _routeService = routeService;
         _uiInteractiveService = uiInteractiveService;
+        _fileLauncherService = fileLauncherService;
         var statusUpdateOb = this.WhenAnyValue(t => t.CurrentGroupId, t => t._imageScanningService.ImgGroups);
         _statusbarText = statusUpdateOb
             .Select(t => t.Item2 != null ? $"Group: {t.Item1 + 1} / {t.Item2.Count}" : string.Empty)
             .ToProperty(this, t => t.StatusbarText);
 
-        Next = ReactiveCommand.Create(() =>
+        Next = ReactiveCommand.CreateFromTask(async () =>
         {
             ++CurrentGroupId;
-            PrepareContent();
+            await PrepareContent();
         }, statusUpdateOb.Select(t => t.Item1 < (t.Item2?.Count ?? 0) - 1));
 
-        Previous = ReactiveCommand.Create(() =>
+        Previous = ReactiveCommand.CreateFromTask(async () =>
         {
             --CurrentGroupId;
-            PrepareContent();
+            await PrepareContent();
         }, statusUpdateOb.Select(t => t.Item1 > 0));
 
         this.WhenAnyValue(t => t.CurrentSelected)
@@ -78,27 +81,27 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
     public ICommand Next { get; }
     public ICommand Previous { get; }
 
-    public void Complete()
+    public async void Complete()
     {
         _routeService.CompletePageViewModel!.Init();
-        _routeService.HostWindow.Router.Navigate.Execute(_routeService.CompletePageViewModel!);
+        await _routeService.HostWindow.Router.Navigate.Execute(_routeService.CompletePageViewModel!).ToTask();
     }
 
-    public void Init()
+    public async Task Init()
     {
         if (_imageScanningService.ImgGroups!.Count == 0)
         {
             // nothing to do
-            _uiInteractiveService.Warning("Scan complete. No similarity images found.").ConfigureAwait(false);
-            _routeService.HostWindow.Router.Navigate.Execute(_routeService.HomePageViewModel!);
+            await _uiInteractiveService.Warning("Scan complete. No similarity images found.");
+            await _routeService.HostWindow.Router.Navigate.Execute(_routeService.HomePageViewModel!).ToTask();
             return;
         }
 
         CurrentGroupId = 0;
-        PrepareContent();
+        await PrepareContent();
     }
 
-    public async void PrepareContent()
+    public async Task PrepareContent()
     {
         ListContents.Clear();
         var bestSize = CurrentGroup.MaxBy(t => t.FileSize)!;
@@ -110,7 +113,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
             if (_imageScanningService.ImgGroups.Count == 0)
             {
                 await _uiInteractiveService.Warning("All items are invalid!");
-                _routeService.HostWindow.Router.Navigate.Execute(_routeService.HomePageViewModel!);
+                await _routeService.HostWindow.Router.Navigate.Execute(_routeService.HomePageViewModel!).ToTask();
                 return;
             }
             
@@ -127,7 +130,7 @@ public class ComparePageViewModel : ViewModelBase, IRoutableViewModel
                 await t.ComputeFileHash();
             }
             return new ImageCompareElementModel(t, t.Width * t.Height == bestRes.Width * bestRes.Height,
-                t.FileSize == bestSize.FileSize);
+                t.FileSize == bestSize.FileSize, _fileLauncherService, _uiInteractiveService);
         }).ToList());
         ListContents.AddRange(converted);
 
